@@ -171,7 +171,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2020-10-15 20:53:03 / 修改時間：21:22:57" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
+              <time title="創建時間：2020-10-15 20:53:03 / 修改時間：21:31:21" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
             </span>
 
           
@@ -203,7 +203,7 @@
 
 <p>很簡單, 就是讀<code>0x80</code> bytes</p>
 <p>接著題目說 <code>Open</code>, <code>Read</code>, 就看不太懂了</p>
-<p>不過觀察組語可發現 <code>main()</code> stack大小為 0x70, 而<code>read_80_bytes()</code> 造成 overflow</p>
+<p>不過觀察組語可發現 <code>main()</code> stack大小小於<code>0x80(128)</code>, 而<code>read_80_bytes()</code> 造成 overflow</p>
 <p>因為ASLR, NX 的關係, 需要想辦法ROP</p>
 <p>但binary太小, 組不起ROP chain, 因此使用libc</p>
 <p>只要Leak GOT, 接著就可以算出libc base &amp; getshell了</p>
