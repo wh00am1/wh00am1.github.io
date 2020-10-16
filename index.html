@@ -171,7 +171,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2020-10-16 19:39:06 / 修改時間：20:09:00" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 19:39:06 / 修改時間：20:09:48" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
             </span>
 
           
@@ -208,7 +208,7 @@
 <li><code>0x75</code> 為 <code>jne</code></li>
 <li><code>0x400773 = 0x400767 + 0xa</code></li>
 </ol>
-<p>所以我們可以先把<code>0x00400767</code> 的<code>jne 0x400773</code> 改成跳到main</p>
+<p>所以我們可以先把<code>0x00400767</code> 的<code>jne 0x400773</code> 改成跳到main裡面</p>
 <p>這樣就可以成為無限迴圈(因為<code>v4</code>永遠不會等於<code>255</code>, <code>0xff</code> 是無效的opcode)</p>
 <h3 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h3><p>有了無限迴圈之後, 就可以寫值了</p>
 <p>只要最後把它再次patch回去就好</p>
