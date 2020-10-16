@@ -171,7 +171,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2020-10-16 19:39:06 / 修改時間：20:11:14" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 19:39:06 / 修改時間：20:43:31" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
             </span>
 
           
@@ -206,7 +206,7 @@
 <ol>
 <li>此處機械碼為 <code>750a</code></li>
 <li><code>0x75</code> 為 <code>jne</code></li>
-<li><code>0x400773 = 0x400767 + 0xa</code></li>
+<li><code>0x400773 = 0x400767 + 0xa +2</code> (注意+2因為RIP已經讀完這兩個byte) </li>
 </ol>
 <p>所以我們可以先把<code>0x00400767</code> 的<code>jne 0x400773</code> 改成跳到main裡面</p>
 <p>這樣就可以成為無限迴圈(因為<code>v4</code>永遠不會等於<code>255</code>, <code>0xff</code> 是無效的opcode)</p>
