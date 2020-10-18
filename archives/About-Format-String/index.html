@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Format String 花式玩法1. 解決PIEStack Memory LayoutStack的分布大致上是: &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;  Enviorment Varibles rsp&#x3D;&#x3D;&#x3D;&gt;(data)       (data)       (data)        Stack Canaryrbp&#x3D;&#x3D;&#x3D;&gt;(data)        Saved R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="About Format String">
+<meta property="og:url" content="https://wh00am1.github.io/archives/About-Format-String/index.html">
+<meta property="og:site_name" content="Wh0am1&#39;s Blog">
+<meta property="og:description" content="Format String 花式玩法1. 解決PIEStack Memory LayoutStack的分布大致上是: &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;  Enviorment Varibles rsp&#x3D;&#x3D;&#x3D;&gt;(data)       (data)       (data)        Stack Canaryrbp&#x3D;&#x3D;&#x3D;&gt;(data)        Saved R">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-10-18T11:15:52.000Z">
+<meta property="article:modified_time" content="2020-10-18T11:38:22.518Z">
+<meta property="article:author" content="wh0am1">
+<meta property="article:tag" content="Notes, pwn">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wh00am1.github.io/archives/About-Format-String/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-TW'
+  };
+</script>
+
+  <title>About Format String | Wh0am1's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wh0am1's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">A CTF beginner's Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/About-Format-String/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          About Format String
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2020-10-18 19:15:52 / 修改時間：19:38:22" itemprop="dateCreated datePublished" datetime="2020-10-18T19:15:52+08:00">2020-10-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Format-String-花式玩法"><a href="#Format-String-花式玩法" class="headerlink" title="Format String 花式玩法"></a>Format String 花式玩法</h1><h2 id="1-解決PIE"><a href="#1-解決PIE" class="headerlink" title="1. 解決PIE"></a>1. 解決PIE</h2><h3 id="Stack-Memory-Layout"><a href="#Stack-Memory-Layout" class="headerlink" title="Stack Memory Layout"></a>Stack Memory Layout</h3><p>Stack的分布大致上是:</p>
+<p>==========================</p>
+<pre><code> Enviorment Varibles</code></pre>
+<p>rsp===&gt;(data)<br>       (data)<br>       (data)<br>        Stack Canary<br>rbp===&gt;(data)<br>        Saved RBP<br>        return address</p>
+<p>==========================</p>
+<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>因此可以構造 <code>%(order)$p</code> 的Payload去 Leak Return Address</p>
+<p>然後將<code>__libc_start_main</code>的offset減掉之後，做後續的ROP</p>
+<p>p.s. RBP之下的東西會先經過shared library再到Heap</p>
+<h2 id="2-繞過Canary"><a href="#2-繞過Canary" class="headerlink" title="2. 繞過Canary"></a>2. 繞過Canary</h2><h3 id="Stack-Memory-Layout-1"><a href="#Stack-Memory-Layout-1" class="headerlink" title="Stack Memory Layout"></a>Stack Memory Layout</h3><p>==========================</p>
+<pre><code> Enviorment Varibles</code></pre>
+<p>rsp===&gt;(data)<br>       (data)<br>       (data)<br>        Stack Canary<br>rbp===&gt;(data)<br>        Saved RBP<br>        return address</p>
+<p>==========================</p>
+<h3 id="solution"><a href="#solution" class="headerlink" title="solution"></a>solution</h3><p>關於Canary的小知識:啟用Canary保護的程式會有<code>__stack_chk_fail</code>函數，因此可以構造payload:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">payload = fmtstr_payload(offset, &#123;elf.got[<span class="string">&#x27;__stack_chk_fail&#x27;</span>] : $gadget_addr&#125;) </span><br><span class="line">payload = payload.ljust($stack_size+<span class="number">8</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">payload += struct.pack(<span class="string">&quot;&lt;Q&quot;</span>, $PC)</span><br></pre></td></tr></table></figure>
+
+<p>其中gadget_addr指向<code>ret</code> gadget, 這樣跳轉到<code>__stack_chk_fail</code>之後就會直接回到main執行<code>leave; ret</code>了</p>
+<p>最後在<code>ret</code>時會直接踩上覆蓋的return address, 直接control PC</p>
+<h2 id="3-搭配Heap組合技"><a href="#3-搭配Heap組合技" class="headerlink" title="3. 搭配Heap組合技"></a>3. 搭配Heap組合技</h2><h3 id="小知識"><a href="#小知識" class="headerlink" title="小知識"></a>小知識</h3><p>在需要輸出的字串過大時(&gt;100000), 會用Heap來存放要輸出的東西</p>
+<p>所以可以用<code>%(count)c</code>構造payload: <code>%100000c</code>產生長度夠的字串</p>
+<p>然後把<code>__free_hook</code>或是<code>__malloc_hook</code>的GOT蓋掉, 這樣程式在malloc()/free()時就會去執行我們蓋掉的值</p>
+<h3 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">libc.symbols[<span class="string">&#x27;one_gadget&#x27;</span>] = libc.address + offset</span><br><span class="line">payload = fmtstr_payload(offset, &#123;libc.symbols[<span class="string">&#x27;__free_hook&#x27;</span>] : libc.symbols[<span class="string">&#x27;one_gadget&#x27;</span>]&#125;)</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Notes-pwn/" rel="tag"># Notes, pwn</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/archives/hackme-inndy-tw-ROP-Writeup/" rel="prev" title="hackme.inndy.tw ROP Writeup">
+      <i class="fa fa-chevron-left"></i> hackme.inndy.tw ROP Writeup
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Format-String-%E8%8A%B1%E5%BC%8F%E7%8E%A9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">Format String 花式玩法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%A7%A3%E6%B1%BAPIE"><span class="nav-number">1.1.</span> <span class="nav-text">1. 解決PIE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-Memory-Layout"><span class="nav-number">1.1.1.</span> <span class="nav-text">Stack Memory Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Solution"><span class="nav-number">1.1.2.</span> <span class="nav-text">Solution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%B9%9E%E9%81%8ECanary"><span class="nav-number">1.2.</span> <span class="nav-text">2. 繞過Canary</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack-Memory-Layout-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">Stack Memory Layout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#solution"><span class="nav-number">1.2.2.</span> <span class="nav-text">solution</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%90%AD%E9%85%8DHeap%E7%B5%84%E5%90%88%E6%8A%80"><span class="nav-number">1.3.</span> <span class="nav-text">3. 搭配Heap組合技</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%9F%A5%E8%AD%98"><span class="nav-number">1.3.1.</span> <span class="nav-text">小知識</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payload"><span class="nav-number">1.3.2.</span> <span class="nav-text">payload</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wh0am1</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">標籤</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wh0am1</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 強力驅動
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
