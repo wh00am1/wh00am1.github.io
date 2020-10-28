@@ -146,6 +146,100 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/Function-Prologue-and-Epilogue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/Function-Prologue-and-Epilogue/" class="post-title-link" itemprop="url">Function Prologue and Epilogue</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2020-10-28 19:44:09 / 修改時間：20:01:58" itemprop="dateCreated datePublished" datetime="2020-10-28T19:44:09+08:00">2020-10-28</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="ASM-Function-prologue-and-Epilogue"><a href="#ASM-Function-prologue-and-Epilogue" class="headerlink" title="ASM Function prologue and Epilogue"></a>ASM Function prologue and Epilogue</h1><h2 id="Function-Prologue"><a href="#Function-Prologue" class="headerlink" title="Function Prologue"></a>Function Prologue</h2><p>基本上是定義一些函數在初始化時需要做的事，就像在C裡面的<code>int main(int argc, char *argv[])</code>一樣是成文規定</p>
+<h3 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h3><p>在Function Prologue中，主要做三件事:</p>
+<ol>
+<li>在stack上保存現在這個stack frame的base poiner(例如RBP)</li>
+<li>將base pointer對準stack address pointer(例如RSP)</li>
+<li>分配stack空間</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rbp</span><br><span class="line">mov rbp, rsp</span><br><span class="line">sub rsp, $offset</span><br></pre></td></tr></table></figure>
+
+<h2 id="Function-Epilogue"><a href="#Function-Epilogue" class="headerlink" title="Function Epilogue"></a>Function Epilogue</h2><p>也是一個寫法上的規定，是函數結束時需要做的事(ex.回收stack之類的)，配合Prologue, 可以讓程式執行時為各函數分配stack空間，也不會互相損毀各自的stack frame</p>
+<h3 id="Implemetation"><a href="#Implemetation" class="headerlink" title="Implemetation"></a>Implemetation</h3><p>基本上是將Prologue的流程反過來執行一次:</p>
+<ol>
+<li>將stack address pointer對準base pointer</li>
+<li>恢復舊的stack base</li>
+<li>ret</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov rsp, rbp</span><br><span class="line">pop rbp</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<p>而在x86架構下，有個更精簡的寫法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leave</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<p>就是利用<code>leave</code> 代替了<code>mov rsp, rbp; pop rbp;</code></p>
+<h2 id="補充"><a href="#補充" class="headerlink" title="補充"></a>補充</h2><p>既然寫了prologue, epilogue，那就順便寫寫<code>call</code>/<code>ret</code>好了</p>
+<h3 id="call"><a href="#call" class="headerlink" title="call"></a>call</h3><h4 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h4><p>是用來呼叫函數使用的instruction, 主要做兩件事:</p>
+<ol>
+<li>保存現在的Instruction pointer, 等下才可以return</li>
+<li>將Instruction pointer設成目標函數 (相當於jmp)</li>
+</ol>
+<h4 id="Implementation-1"><a href="#Implementation-1" class="headerlink" title="Implementation"></a>Implementation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push rip</span><br><span class="line">jmp $target</span><br></pre></td></tr></table></figure>
+
+<p>注意其實沒有<code>push rip</code>這個寫法，只是為了表示用，控制流程只能用<code>call/ ret/ jxx</code></p>
+<h3 id="ret"><a href="#ret" class="headerlink" title="ret"></a>ret</h3><h4 id="Intro-1"><a href="#Intro-1" class="headerlink" title="Intro"></a>Intro</h4><p>在函數執行完畢返回時所執行的Instruction, 只會做一件事:</p>
+<p>將保存在現在stack頂部(因為已經在epilogue末尾，base pointer已經被取走了)的return address 設成Instruction pointer</p>
+<h4 id="Implementation-2"><a href="#Implementation-2" class="headerlink" title="Implementation"></a>Implementation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop rip</span><br></pre></td></tr></table></figure>
+
+<p>同樣也是為了表示才用<code>pop rip</code>這種寫法 (這是不合法的)</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/About-Format-String/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -705,12 +799,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>
