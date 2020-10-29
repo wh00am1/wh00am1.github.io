@@ -146,6 +146,114 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/Loader/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/Loader/" class="post-title-link" itemprop="url">Loader</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2020-10-29 22:21:20 / 修改時間：23:05:57" itemprop="dateCreated datePublished" datetime="2020-10-29T22:21:20+08:00">2020-10-29</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="關於Linux-ELF-Loader"><a href="#關於Linux-ELF-Loader" class="headerlink" title="關於Linux ELF Loader"></a>關於Linux ELF Loader</h1><h2 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h2><p>在程式執行開始之前，shell會做<code>execve()</code>以及<code>fork()</code>來啟動程式</p>
+<p>接著程式就會被映射到記憶體上，然後開始接下來的一串動作:</p>
+<ol>
+<li>找<code>PT_INTERP</code> segment</li>
+<li>map <code>text</code>, <code>data</code>, 其中<code>text</code>在lower address</li>
+<li>載入<code>ld.so</code>, 映射到記憶體(process memory)</li>
+<li>分配<code>Bss</code></li>
+<li>跳轉到OEP, 大多數程式應該都是<code>_start</code></li>
+</ol>
+<p>然後那隻被<code>execve()</code>的程式這時候才真的開始做事XD</p>
+<p>先寫一隻比較簡單的程式並看看在<code>_start</code>之後又是怎麼跳轉到<code>main()</code>的:</p>
+<p>就寫一隻hello world:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">char</span> str[] = <span class="string">&quot;Hell  World!!~~~~&quot;</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, str);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然後編譯，直接拖到IDA裡面F5看pseudo code(方便拉XD)</p>
+<h2 id="Analyze"><a href="#Analyze" class="headerlink" title="Analyze"></a>Analyze</h2><h3 id="start"><a href="#start" class="headerlink" title="start"></a>start</h3><p><code>_start</code>函數長的大概是這樣:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public _start</span><br><span class="line">_start proc near</span><br><span class="line">; __unwind &#123;</span><br><span class="line">xor     ebp, ebp</span><br><span class="line">mov     r9, rdx         ; rtld_fini</span><br><span class="line">pop     rsi             ; argc</span><br><span class="line">mov     rdx, rsp        ; ubp_av</span><br><span class="line">and     rsp, 0FFFFFFFFFFFFFFF0h</span><br><span class="line">push    rax</span><br><span class="line">push    rsp             ; stack_end</span><br><span class="line">lea     r8, __libc_csu_fini ; fini</span><br><span class="line">lea     rcx, __libc_csu_init ; init</span><br><span class="line">lea     rdi, main       ; main</span><br><span class="line">call    cs:__libc_start_main_ptr</span><br><span class="line">hlt</span><br><span class="line">; &#125; &#x2F;&#x2F; starts at 1050</span><br><span class="line">_start endp</span><br></pre></td></tr></table></figure>
+
+<p>可以看到大概是先把命令列<code>argc</code>放去<code>rsi</code>，接著保存了<code>RAX</code>, <code>RSP</code>, 接著把<code>__libc_csu_fini</code>, <code>__libc_csu_init</code>放到<code>r8</code>和<code>rcx</code>, 然後把<code>main</code>放到<code>rdi</code>, 也就是第一個參數 (所以這邊整個是一個calling convention這樣)</p>
+<p>然後他就呼叫了<code>__libc_start_main_ptr</code>, 追進去之後發現是一個外部函數，那就可以去libc裡面看</p>
+<h3 id="libc-start-main"><a href="#libc-start-main" class="headerlink" title="libc_start_main"></a>libc_start_main</h3><p>GNU libc裡面的<code>__libc_start_main</code>大概長這樣:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">STATIC <span class="keyword">int</span></span><br><span class="line">LIBC_START_MAIN (<span class="keyword">int</span> (*main) (<span class="keyword">int</span>, <span class="keyword">char</span> **, <span class="keyword">char</span> ** MAIN_AUXVEC_DECL),</span><br><span class="line">		 <span class="keyword">int</span> argc, <span class="keyword">char</span> **argv,</span><br><span class="line">		 __typeof (main) init,</span><br><span class="line">		 <span class="keyword">void</span> (*fini) (<span class="keyword">void</span>),</span><br><span class="line">		 <span class="keyword">void</span> (*rtld_fini) (<span class="keyword">void</span>), <span class="keyword">void</span> *stack_end)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">/* Result of the &#x27;main&#x27; function.  */</span></span><br><span class="line">  <span class="keyword">int</span> result;</span><br><span class="line"></span><br><span class="line">  __libc_multiple_libcs = &amp;_dl_starting_up &amp;&amp; !_dl_starting_up;</span><br><span class="line"></span><br><span class="line">............</span><br><span class="line">  __libc_init_first (argc, argv, __environ);</span><br><span class="line">  <span class="keyword">if</span>(fini)</span><br><span class="line">    __cxa_atexit ((<span class="keyword">void</span> (*) (<span class="keyword">void</span> *)) fini, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">  <span class="keyword">if</span> (init)</span><br><span class="line">    (*init) (argc, argv, __environ MAIN_AUXVEC_PARAM);</span><br><span class="line"></span><br><span class="line">...............</span><br><span class="line">      <span class="keyword">if</span> (! atomic_decrement_and_test (ptr))&#123;</span><br><span class="line">	__exit_thread ();</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">/* Nothing fancy, just call the function.  */</span></span><br><span class="line">  result = main (argc, argv, __environ MAIN_AUXVEC_PARAM);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="built_in">exit</span> (result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因為原始的code太長了，把她精簡一下，刪掉那些沒用的<code>#ifdef</code>, <code>#endif</code>之後，可以看到他會先呼叫<code>__libc_init_first</code>, 接著register <code>fini</code>, 然後跳轉到<code>init</code>, 最後才呼叫 <code>main(argc, argv, envp)</code>, 然後保存result並以這個結果<code>exit()</code></p>
+<p>接下來看<code>__libc_init_first</code></p>
+<h3 id="libc-init-first"><a href="#libc-init-first" class="headerlink" title="libc_init_first"></a>libc_init_first</h3><p>去掉垃圾之後大概只剩下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_init (<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv, <span class="keyword">char</span> **envp)</span><br></pre></td></tr></table></figure>
+
+<p>這樣了XDD，反正就是跳到<code>init</code>上面，然後初始化</p>
+<p>接著延續在<code>__libc_start_main</code>的東西，我們可以知道他會跳轉到<code>__libc_csu_init</code>上面執行，最後執行<code>main(argc, argv, envp)</code>, <code>exit(result)</code></p>
+<h3 id="libc-csu-init"><a href="#libc-csu-init" class="headerlink" title="libc_csu_init"></a>libc_csu_init</h3><p>大概是長這樣:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __fastcall _libc_csu_init(<span class="keyword">unsigned</span> <span class="keyword">int</span> a1, __int64 a2, __int64 a3)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v3; <span class="comment">// r14</span></span><br><span class="line">  <span class="keyword">signed</span> __int64 v4; <span class="comment">// rbp</span></span><br><span class="line">  __int64 v5; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  v3 = a3;</span><br><span class="line">  init_proc();</span><br><span class="line">  v4 = &amp;_do_global_dtors_aux_fini_array_entry - &amp;_frame_dummy_init_array_entry;</span><br><span class="line">  <span class="keyword">if</span> ( v4 )</span><br><span class="line">  &#123;</span><br><span class="line">    v5 = <span class="number">0L</span>L;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">      ((<span class="keyword">void</span> (__fastcall *)(_QWORD, __int64, __int64))*(&amp;_frame_dummy_init_array_entry + v5++))(a1, a2, v3);</span><br><span class="line">    <span class="keyword">while</span> ( v4 != v5 );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就是呼叫了<code>init_proc</code>, 接著呼叫<code>init_array</code>上面的東西來完成程式初始化</p>
+<p>接下來是<code>init_proc</code></p>
+<h3 id="init-proc"><a href="#init-proc" class="headerlink" title="init_proc"></a>init_proc</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__int64 (**init_proc())(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 (**result)(<span class="keyword">void</span>); <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  result = &amp;_gmon_start__;</span><br><span class="line">  <span class="keyword">if</span> ( &amp;_gmon_start__ )</span><br><span class="line">    result = (__int64 (**)(<span class="keyword">void</span>))_gmon_start__();</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就是呼叫了<code>gmon_start</code></p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>看完之後大概整理程式啟動流程如下:</p>
+<ol>
+<li>找<code>PT_INTERP</code> segment</li>
+<li>map <code>text</code>, <code>data</code>, 其中<code>text</code>在lower address</li>
+<li>載入<code>ld.so</code>, 映射到記憶體(process memory)</li>
+<li>分配<code>Bss</code></li>
+<li>跳轉到OEP, 大多數程式應該都是<code>_start</code></li>
+<li>進去<code>_start</code>之後她幫你呼叫<code>__libc_start_main</code></li>
+<li><code>__libc_start_main</code>呼叫init array完成初始化然後呼叫<code>__libc_csu_init</code></li>
+<li>終於執行<code>main(argc, argv, envp)</code>然後保存狀態<code>exit()</code></li>
+</ol>
+<p>關於Glibc source code:<br><a target="_blank" rel="noopener" href="https://github.com/lattera/glibc/blob/master/csu/libc-start.c">https://github.com/lattera/glibc/blob/master/csu/libc-start.c</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/Function-Prologue-and-Epilogue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -799,12 +907,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>
