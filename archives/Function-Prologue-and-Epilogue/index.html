@@ -28,7 +28,7 @@
 <meta property="og:description" content="ASM Function prologue and EpilogueFunction Prologue基本上是定義一些函數在初始化時需要做的事，就像在C裡面的int main(int argc, char *argv[])一樣是成文規定 Implementation在Function Prologue中，主要做三件事:  在stack上保存現在這個stack frame的base poiner(例">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-10-28T11:44:09.000Z">
-<meta property="article:modified_time" content="2020-10-28T12:01:58.934Z">
+<meta property="article:modified_time" content="2021-01-22T10:56:43.387Z">
 <meta property="article:author" content="wh0am1">
 <meta property="article:tag" content="Reverse, ASM">
 <meta name="twitter:card" content="summary">
@@ -174,10 +174,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-28 19:44:09 / 修改時間：20:01:58" itemprop="dateCreated datePublished" datetime="2020-10-28T19:44:09+08:00">2020-10-28</time>
+              <time title="創建時間：2020-10-28 19:44:09" itemprop="dateCreated datePublished" datetime="2020-10-28T19:44:09+08:00">2020-10-28</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:56:43" itemprop="dateModified" datetime="2021-01-22T18:56:43+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -195,10 +201,11 @@
 <ol>
 <li>在stack上保存現在這個stack frame的base poiner(例如RBP)</li>
 <li>將base pointer對準stack address pointer(例如RSP)</li>
-<li>分配stack空間</li>
-</ol>
+<li>分配stack空間<a id="more"></a>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rbp</span><br><span class="line">mov rbp, rsp</span><br><span class="line">sub rsp, $offset</span><br></pre></td></tr></table></figure>
 
+</li>
+</ol>
 <h2 id="Function-Epilogue"><a href="#Function-Epilogue" class="headerlink" title="Function Epilogue"></a>Function Epilogue</h2><p>也是一個寫法上的規定，是函數結束時需要做的事(ex.回收stack之類的)，配合Prologue, 可以讓程式執行時為各函數分配stack空間，也不會互相損毀各自的stack frame</p>
 <h3 id="Implemetation"><a href="#Implemetation" class="headerlink" title="Implemetation"></a>Implemetation</h3><p>基本上是將Prologue的流程反過來執行一次:</p>
 <ol>
@@ -244,8 +251,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/archives/About-Format-String/" rel="prev" title="About Format String">
-      <i class="fa fa-chevron-left"></i> About Format String
+    <a href="/archives/hackme-inndy-tw-ROP-Writeup/" rel="prev" title="hackme.inndy.tw ROP Writeup">
+      <i class="fa fa-chevron-left"></i> hackme.inndy.tw ROP Writeup
     </a></div>
       <div class="post-nav-item">
     <a href="/archives/Loader/" rel="next" title="Loader">
@@ -323,12 +330,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>

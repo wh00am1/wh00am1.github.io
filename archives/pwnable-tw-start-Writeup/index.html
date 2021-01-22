@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="pwnable.tw start (pwn)保護機制Nope 分析程式僅有一OEP (entry 0) 簡單看一下: 1234567891011121314151617181920212223┌ 61: entry0 ();│           0x08048060      54             push esp                    ; [01] -r-x secti">
+  <meta name="description" content="pwnable.tw start (pwn)保護機制Nope 分析程式僅有一OEP (entry 0) 簡單看一下:">
 <meta property="og:type" content="article">
 <meta property="og:title" content="pwnable.tw start Writeup">
 <meta property="og:url" content="https://wh00am1.github.io/archives/pwnable-tw-start-Writeup/index.html">
 <meta property="og:site_name" content="Wh0am1&#39;s Blog">
-<meta property="og:description" content="pwnable.tw start (pwn)保護機制Nope 分析程式僅有一OEP (entry 0) 簡單看一下: 1234567891011121314151617181920212223┌ 61: entry0 ();│           0x08048060      54             push esp                    ; [01] -r-x secti">
+<meta property="og:description" content="pwnable.tw start (pwn)保護機制Nope 分析程式僅有一OEP (entry 0) 簡單看一下:">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-10-16T10:57:30.000Z">
-<meta property="article:modified_time" content="2020-10-16T11:15:39.333Z">
+<meta property="article:modified_time" content="2021-01-22T10:58:24.233Z">
 <meta property="article:author" content="wh0am1">
 <meta property="article:tag" content="CTF, pwn">
 <meta name="twitter:card" content="summary">
@@ -174,10 +174,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-16 18:57:30 / 修改時間：19:15:39" itemprop="dateCreated datePublished" datetime="2020-10-16T18:57:30+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 18:57:30" itemprop="dateCreated datePublished" datetime="2020-10-16T18:57:30+08:00">2020-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:58:24" itemprop="dateModified" datetime="2021-01-22T18:58:24+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -193,6 +199,7 @@
         <h1 id="pwnable-tw-start-pwn"><a href="#pwnable-tw-start-pwn" class="headerlink" title="pwnable.tw start (pwn)"></a>pwnable.tw start (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Nope</p>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>程式僅有一OEP (entry 0)</p>
 <p>簡單看一下:</p>
+<a id="more"></a>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">┌ 61: entry0 ();</span><br><span class="line">│           0x08048060      54             push esp                    ; [01] -r-x section size 67 named .text</span><br><span class="line">│           0x08048061      689d800408     push loc._exit              ; 0x804809d ; &quot;\1\xc0@\u0340\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff&quot;                                                         </span><br><span class="line">│           0x08048066      31c0           xor eax, eax</span><br><span class="line">│           0x08048068      31db           xor ebx, ebx</span><br><span class="line">│           0x0804806a      31c9           xor ecx, ecx</span><br><span class="line">│           0x0804806c      31d2           xor edx, edx</span><br><span class="line">│           0x0804806e      684354463a     push 0x3a465443             ; &#39;CTF:&#39;</span><br><span class="line">│           0x08048073      6874686520     push 0x20656874             ; &#39;the &#39;</span><br><span class="line">│           0x08048078      6861727420     push 0x20747261             ; &#39;art &#39;</span><br><span class="line">│           0x0804807d      6873207374     push 0x74732073             ; &#39;s st&#39;</span><br><span class="line">│           0x08048082      684c657427     push 0x2774654c             ; &#39;Let&#39;&#39;</span><br><span class="line">│           0x08048087      89e1           mov ecx, esp</span><br><span class="line">│           0x08048089      b214           mov dl, 0x14                ; 20</span><br><span class="line">│           0x0804808b      b301           mov bl, 1</span><br><span class="line">│           0x0804808d      b004           mov al, 4</span><br><span class="line">│           0x0804808f      cd80           int 0x80</span><br><span class="line">│           0x08048091      31db           xor ebx, ebx</span><br><span class="line">│           0x08048093      b23c           mov dl, 0x3c                ; &#39;&lt;&#39; ; 60</span><br><span class="line">│           0x08048095      b003           mov al, 3</span><br><span class="line">│           0x08048097      cd80           int 0x80</span><br><span class="line">│           0x08048099      83c414         add esp, 0x14</span><br><span class="line">└           0x0804809c      c3             ret</span><br></pre></td></tr></table></figure>
 
 <p>先是把字串<code>&quot;Let&#39;s start the CTF:&quot;</code>印出, 接著用<code>read()</code>讀了 60 bytes造成overflow</p>
@@ -305,12 +312,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>

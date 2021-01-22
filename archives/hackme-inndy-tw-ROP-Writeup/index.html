@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="hackme.inndy.tw ROP &amp; ROP2 (pwn)ROP保護機制NX, Partial RELRO 分析32-bit, 靜態編譯 程式邏輯這題直接看組語便可解: main1234567891011121314151617181920┌ 48: int main (int32_t arg_4h);│           ; var int32_t var_4h @ ebp-0x">
+  <meta name="description" content="hackme.inndy.tw ROP &amp; ROP2 (pwn)ROP保護機制NX, Partial RELRO 分析32-bit, 靜態編譯">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hackme.inndy.tw ROP Writeup">
 <meta property="og:url" content="https://wh00am1.github.io/archives/hackme-inndy-tw-ROP-Writeup/index.html">
 <meta property="og:site_name" content="Wh0am1&#39;s Blog">
-<meta property="og:description" content="hackme.inndy.tw ROP &amp; ROP2 (pwn)ROP保護機制NX, Partial RELRO 分析32-bit, 靜態編譯 程式邏輯這題直接看組語便可解: main1234567891011121314151617181920┌ 48: int main (int32_t arg_4h);│           ; var int32_t var_4h @ ebp-0x">
+<meta property="og:description" content="hackme.inndy.tw ROP &amp; ROP2 (pwn)ROP保護機制NX, Partial RELRO 分析32-bit, 靜態編譯">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-10-16T13:45:20.000Z">
-<meta property="article:modified_time" content="2020-10-16T14:06:20.973Z">
+<meta property="article:modified_time" content="2021-01-22T10:57:47.947Z">
 <meta property="article:author" content="wh0am1">
 <meta property="article:tag" content="CTF, pwn">
 <meta name="twitter:card" content="summary">
@@ -174,10 +174,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">發表於</span>
-              
 
-              <time title="創建時間：2020-10-16 21:45:20 / 修改時間：22:06:20" itemprop="dateCreated datePublished" datetime="2020-10-16T21:45:20+08:00">2020-10-16</time>
+              <time title="創建時間：2020-10-16 21:45:20" itemprop="dateCreated datePublished" datetime="2020-10-16T21:45:20+08:00">2020-10-16</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新於</span>
+                <time title="修改時間：2021-01-22 18:57:47" itemprop="dateModified" datetime="2021-01-22T18:57:47+08:00">2021-01-22</time>
+              </span>
 
           
 
@@ -192,6 +198,7 @@
       
         <h1 id="hackme-inndy-tw-ROP-amp-ROP2-pwn"><a href="#hackme-inndy-tw-ROP-amp-ROP2-pwn" class="headerlink" title="hackme.inndy.tw ROP &amp; ROP2 (pwn)"></a>hackme.inndy.tw ROP &amp; ROP2 (pwn)</h1><h2 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h2><h3 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h3><p>NX, Partial RELRO</p>
 <h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>32-bit, 靜態編譯</p>
+<a id="more"></a>
 <h4 id="程式邏輯"><a href="#程式邏輯" class="headerlink" title="程式邏輯"></a>程式邏輯</h4><p>這題直接看組語便可解:</p>
 <h5 id="main"><a href="#main" class="headerlink" title="main"></a>main</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">┌ 48: int main (int32_t arg_4h);</span><br><span class="line">│           ; var int32_t var_4h @ ebp-0x4</span><br><span class="line">│           ; arg int32_t arg_4h @ esp+0x24</span><br><span class="line">│           0x08048894      8d4c2404       lea ecx, dword [arg_4h]</span><br><span class="line">│           0x08048898      83e4f0         and esp, 0xfffffff0</span><br><span class="line">│           0x0804889b      ff71fc         push dword [ecx - 4]</span><br><span class="line">│           0x0804889e      55             push ebp</span><br><span class="line">│           0x0804889f      89e5           mov ebp, esp</span><br><span class="line">│           0x080488a1      51             push ecx</span><br><span class="line">│           0x080488a2      83ec04         sub esp, 4</span><br><span class="line">│           0x080488a5      83ec0c         sub esp, 0xc</span><br><span class="line">│           0x080488a8      6a1e           push 0x1e                   ; 30</span><br><span class="line">│           0x080488aa      e861400200     call sym.alarm</span><br><span class="line">│           0x080488af      83c410         add esp, 0x10</span><br><span class="line">│           0x080488b2      e8c5ffffff     call sym.overflow</span><br><span class="line">│           0x080488b7      b800000000     mov eax, 0</span><br><span class="line">│           0x080488bc      8b4dfc         mov ecx, dword [var_4h]</span><br><span class="line">│           0x080488bf      c9             leave</span><br><span class="line">│           0x080488c0      8d61fc         lea esp, dword [ecx - 4]</span><br><span class="line">└           0x080488c3      c3             ret</span><br></pre></td></tr></table></figure>
 
@@ -250,8 +257,8 @@
       <i class="fa fa-chevron-left"></i> hackme.inndy.tw onepunch Writeup
     </a></div>
       <div class="post-nav-item">
-    <a href="/archives/About-Format-String/" rel="next" title="About Format String">
-      About Format String <i class="fa fa-chevron-right"></i>
+    <a href="/archives/Function-Prologue-and-Epilogue/" rel="next" title="Function Prologue and Epilogue">
+      Function Prologue and Epilogue <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -325,12 +332,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">標籤</span>
       </div>
   </nav>
