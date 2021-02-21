@@ -121,7 +121,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">8</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">7</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,283 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/%E7%AD%86%E8%A8%98-ELF%E5%95%9F%E5%8B%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/%E7%AD%86%E8%A8%98-ELF%E5%95%9F%E5%8B%95/" class="post-title-link" itemprop="url">筆記::ELF啟動</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2021-02-21 18:13:12 / 修改時間：18:13:55" itemprop="dateCreated datePublished" datetime="2021-02-21T18:13:12+08:00">2021-02-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h1><p>在程式執行開始之前，shell會做<code>execve()</code>以及<code>fork()</code>來啟動程式</p>
+<p>接著程式就會被映射到記憶體上，然後開始接下來的一串動作:</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/%E7%AD%86%E8%A8%98-ELF%E5%95%9F%E5%8B%95/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/%E7%AD%86%E8%A8%98-Assembly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/%E7%AD%86%E8%A8%98-Assembly/" class="post-title-link" itemprop="url">筆記::Assembly</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2021-02-21 18:11:47 / 修改時間：18:12:42" itemprop="dateCreated datePublished" datetime="2021-02-21T18:11:47+08:00">2021-02-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Function-Prologue"><a href="#Function-Prologue" class="headerlink" title="Function Prologue"></a>Function Prologue</h1><p>基本上是定義一些函數在初始化時需要做的事，就像在C裡面的<code>int main(int argc, char *argv[])</code>一樣是成文規定</p>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><p>在Function Prologue中，主要做三件事:</p>
+<ol>
+<li>在stack上保存現在這個stack frame的base poiner(例如RBP)</li>
+<li>將base pointer對準stack address pointer(例如RSP)</li>
+<li>分配stack空間
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/%E7%AD%86%E8%A8%98-Assembly/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/WriteUp-hackme-inndy-tw/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/WriteUp-hackme-inndy-tw/" class="post-title-link" itemprop="url">WriteUp::hackme.inndy.tw</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2021-02-21 18:00:16 / 修改時間：18:11:07" itemprop="dateCreated datePublished" datetime="2021-02-21T18:00:16+08:00">2021-02-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="catflag"><a href="#catflag" class="headerlink" title="catflag"></a>catflag</h1><p>用pwntools 送出指令，不要用ncat</p>
+<h1 id="homework"><a href="#homework" class="headerlink" title="homework"></a>homework</h1><p>仔細觀察組語，可以發現return address的對應index</p>
+<p>利用OOB直接就可以解</p>
+<h1 id="toooomuch"><a href="#toooomuch" class="headerlink" title="toooomuch"></a>toooomuch</h1><p>猜數字遊戲，隨便一個二分搜就有答案</p>
+<h1 id="toooomuch2"><a href="#toooomuch2" class="headerlink" title="toooomuch2"></a>toooomuch2</h1><p>簡單的ROP，先利用 <code>fgets()</code>把shellcode吃到bss之後跳上去</p>
+<h1 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/WriteUp-hackme-inndy-tw/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/WriteUp-pwnable-tw/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh0am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wh0am1's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/archives/WriteUp-pwnable-tw/" class="post-title-link" itemprop="url">WriteUp::pwnable.tw</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">發表於</span>
+              
+
+              <time title="創建時間：2021-02-21 17:57:39 / 修改時間：17:59:31" itemprop="dateCreated datePublished" datetime="2021-02-21T17:57:39+08:00">2021-02-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="start-pwn"><a href="#start-pwn" class="headerlink" title="start (pwn)"></a>start (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Nope</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>程式僅有一OEP (entry 0)</p>
+<p>簡單看一下:</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/WriteUp-pwnable-tw/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -371,370 +648,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/hackme-inndy-tw-ROP-Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/hackme-inndy-tw-ROP-Writeup/" class="post-title-link" itemprop="url">hackme.inndy.tw ROP Writeup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-16 21:45:20" itemprop="dateCreated datePublished" datetime="2020-10-16T21:45:20+08:00">2020-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:51:48" itemprop="dateModified" datetime="2021-02-05T10:51:48+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="hackme-inndy-tw-ROP-amp-ROP2-pwn"><a href="#hackme-inndy-tw-ROP-amp-ROP2-pwn" class="headerlink" title="hackme.inndy.tw ROP &amp; ROP2 (pwn)"></a>hackme.inndy.tw ROP &amp; ROP2 (pwn)</h1><h2 id="ROP"><a href="#ROP" class="headerlink" title="ROP"></a>ROP</h2><h3 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h3><p>NX, Partial RELRO</p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>32-bit, 靜態編譯</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/hackme-inndy-tw-ROP-Writeup/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/hackme-inndy-tw-onepunch-Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/hackme-inndy-tw-onepunch-Writeup/" class="post-title-link" itemprop="url">hackme.inndy.tw onepunch Writeup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-16 19:39:06" itemprop="dateCreated datePublished" datetime="2020-10-16T19:39:06+08:00">2020-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:51:34" itemprop="dateModified" datetime="2021-02-05T10:51:34+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="hackme-inndy-tw-onepunch-pwn"><a href="#hackme-inndy-tw-onepunch-pwn" class="headerlink" title="hackme.inndy.tw onepunch (pwn)"></a>hackme.inndy.tw onepunch (pwn)</h1><h2 id="challenge"><a href="#challenge" class="headerlink" title="challenge"></a>challenge</h2><p><code>nc hackme.inndy.tw 7718</code></p>
-<p>Punch!</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/hackme-inndy-tw-onepunch-Writeup/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/pwnable-tw-ORW-Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/pwnable-tw-ORW-Writeup/" class="post-title-link" itemprop="url">pwnable.tw ORW Writeup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-16 19:25:00" itemprop="dateCreated datePublished" datetime="2020-10-16T19:25:00+08:00">2020-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:52:19" itemprop="dateModified" datetime="2021-02-05T10:52:19+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="pwnable-tw-ORW-pwn"><a href="#pwnable-tw-ORW-pwn" class="headerlink" title="pwnable.tw ORW (pwn)"></a>pwnable.tw ORW (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Canary, Partial RELRO</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/pwnable-tw-ORW-Writeup/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/pwnable-tw-start-Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/pwnable-tw-start-Writeup/" class="post-title-link" itemprop="url">pwnable.tw start Writeup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-16 18:57:30" itemprop="dateCreated datePublished" datetime="2020-10-16T18:57:30+08:00">2020-10-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:52:34" itemprop="dateModified" datetime="2021-02-05T10:52:34+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="pwnable-tw-start-pwn"><a href="#pwnable-tw-start-pwn" class="headerlink" title="pwnable.tw start (pwn)"></a>pwnable.tw start (pwn)</h1><h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>Nope</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>程式僅有一OEP (entry 0)</p>
-<p>簡單看一下:</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/pwnable-tw-start-Writeup/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/hackme-inndy-tw-Rsbo-Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/hackme-inndy-tw-Rsbo-Writeup/" class="post-title-link" itemprop="url">hackme.inndy.tw Rsbo Writeup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-15 20:53:03" itemprop="dateCreated datePublished" datetime="2020-10-15T20:53:03+08:00">2020-10-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:52:00" itemprop="dateModified" datetime="2021-02-05T10:52:00+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn"><a href="#hackme-inndy-tw-Rsbo-amp-Rsbo-2-pwn" class="headerlink" title="hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)"></a>hackme.inndy.tw Rsbo(&amp;Rsbo 2) (pwn)</h1><h2 id="challenge"><a href="#challenge" class="headerlink" title="challenge"></a>challenge</h2><p>Tips: ROP, open, read</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/hackme-inndy-tw-Rsbo-Writeup/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
 
@@ -801,7 +714,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
