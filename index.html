@@ -121,7 +121,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">7</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">5</span></a>
 
   </li>
   </ul>
@@ -498,156 +498,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/Loader/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/Loader/" class="post-title-link" itemprop="url">Loader</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-29 22:21:20" itemprop="dateCreated datePublished" datetime="2020-10-29T22:21:20+08:00">2020-10-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:52:10" itemprop="dateModified" datetime="2021-02-05T10:52:10+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="關於Linux-ELF-Loader"><a href="#關於Linux-ELF-Loader" class="headerlink" title="關於Linux ELF Loader"></a>關於Linux ELF Loader</h1><h2 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h2><p>在程式執行開始之前，shell會做<code>execve()</code>以及<code>fork()</code>來啟動程式</p>
-<p>接著程式就會被映射到記憶體上，然後開始接下來的一串動作:</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/Loader/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/archives/Function-Prologue-and-Epilogue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="wh0am1">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wh0am1's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/archives/Function-Prologue-and-Epilogue/" class="post-title-link" itemprop="url">Function Prologue and Epilogue</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">發表於</span>
-
-              <time title="創建時間：2020-10-28 19:44:09" itemprop="dateCreated datePublished" datetime="2020-10-28T19:44:09+08:00">2020-10-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新於</span>
-                <time title="修改時間：2021-02-05 10:51:08" itemprop="dateModified" datetime="2021-02-05T10:51:08+08:00">2021-02-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="ASM-Function-prologue-and-Epilogue"><a href="#ASM-Function-prologue-and-Epilogue" class="headerlink" title="ASM Function prologue and Epilogue"></a>ASM Function prologue and Epilogue</h1><h2 id="Function-Prologue"><a href="#Function-Prologue" class="headerlink" title="Function Prologue"></a>Function Prologue</h2><p>基本上是定義一些函數在初始化時需要做的事，就像在C裡面的<code>int main(int argc, char *argv[])</code>一樣是成文規定</p>
-<h3 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h3><p>在Function Prologue中，主要做三件事:</p>
-<ol>
-<li>在stack上保存現在這個stack frame的base poiner(例如RBP)</li>
-<li>將base pointer對準stack address pointer(例如RSP)</li>
-<li>分配stack空間
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/archives/Function-Prologue-and-Epilogue/#more" rel="contents">
-                閱讀全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
 
@@ -714,7 +564,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
