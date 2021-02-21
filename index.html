@@ -178,7 +178,7 @@
               <span class="post-meta-item-text">發表於</span>
               
 
-              <time title="創建時間：2021-02-21 18:15:56 / 修改時間：19:14:42" itemprop="dateCreated datePublished" datetime="2021-02-21T18:15:56+08:00">2021-02-21</time>
+              <time title="創建時間：2021-02-21 18:15:56 / 修改時間：19:17:53" itemprop="dateCreated datePublished" datetime="2021-02-21T18:15:56+08:00">2021-02-21</time>
             </span>
 
           
@@ -195,49 +195,14 @@
           <h1 id="簡介"><a href="#簡介" class="headerlink" title="簡介"></a>簡介</h1><p>Kernel就像其他一樣正常的程式一樣在電腦裡面跑，只是映射在比較高的位址而已</p>
 <p>還有，kernel主要用於 Userland 以及 硬體層 的溝通</p>
 <h2 id="KLM-Loadable-Kernel-Modules"><a href="#KLM-Loadable-Kernel-Modules" class="headerlink" title="KLM (Loadable Kernel Modules)"></a>KLM (Loadable Kernel Modules)</h2><p>字面上的意思是可加載的核心模組，事實上只是一些在kernel space 運作的程式而已，例如:</p>
-<ol>
-<li>Driver</li>
-<li>Modules</li>
-</ol>
-<p>這些通常也是在CTF題目中需要拿來分析的檔案</p>
-<h2 id="ioctl"><a href="#ioctl" class="headerlink" title="ioctl()"></a>ioctl()</h2><p>這是一個用於對device 進行操作的 syscall</p>
-<p>可以在man裡面找到對應的definition:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ioctl</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">unsigned</span> <span class="keyword">long</span> request, ...)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h2 id="狀態切換"><a href="#狀態切換" class="headerlink" title="狀態切換"></a>狀態切換</h2><p>就如同字面上的意思，在進行syscall或是其他需要動用kernel的操作時，就會進行狀態切換，主要做以下的事:</p>
-<ol>
-<li>使用 <code>swapgs</code> 切換 <code>GS</code> register (會先保存)</li>
-<li>保存當前stack (user -&gt; kernel)</li>
-<li>保存各個 register (user -&gt; kernel)</li>
-<li>跳去 <code>sys_call_table</code> 或是 <code>iretq</code> / <code>sysretq</code></li>
-</ol>
-<h2 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h2><p>除了<code>NX</code>, <code>PIE</code>, <code>Canary</code>, <code>RELRO</code>這些之外，還多了以下兩個保護機制:</p>
-<ol>
-<li>SMEP: 在kernel 模式的時候執行user 記憶體內的內容會噴錯</li>
-<li>SMAP: 在kernel 模式的時候存取user 記憶體內的資料會噴錯</li>
-</ol>
-<h1 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h1><p>接下來的內容是我從 <a target="_blank" rel="noopener" href="https://ctf-wiki.org/pwn/linux/kernel/">CTF-wiki</a> 上面學習的筆記</p>
-<h2 id="Kernel-UAF"><a href="#Kernel-UAF" class="headerlink" title="Kernel UAF"></a>Kernel UAF</h2><p>這裡例題大多參考 CTF-wiki上的做法，可以點 <a target="_blank" rel="noopener" href="https://ctf-wiki.org/pwn/linux/kernel/kernel_uaf/">傳送門</a></p>
-<p>主要紀錄看 writeup 學東西的過程</p>
-<p>檔案都可以從github直接 clone</p>
-<h3 id="babydriver"><a href="#babydriver" class="headerlink" title="babydriver"></a>babydriver</h3><p>拿到檔案，可以先把cpio解壓縮，如果需要分析系統的話則可以解壓bzImage</p>
-<p>這裡可以先解壓cpio:</p>
-<p><code> cpio -idmv &lt; XXX.cpio</code></p>
-<p>然後boot看看:</p>
-<p><code>./boot.sh</code></p>
-<p>突然發現我的qemu壞了，目前還修不好，不過可以先逆向 babydriver.ko</p>
-<h4 id="babyrelease"><a href="#babyrelease" class="headerlink" title="babyrelease:"></a>babyrelease:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __fastcall <span class="title">babyrelease</span><span class="params">(inode *inode, file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  _fentry__(inode, filp);</span><br><span class="line">  kfree(babydev_struct.device_buf);</span><br><span class="line">  printk(<span class="string">&quot;device release\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="babyopen"><a href="#babyopen" class="headerlink" title="babyopen:"></a>babyopen:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __fastcall <span class="title">babyopen</span><span class="params">(inode *inode, file *filp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  _fentry__(inode, filp);</span><br><span class="line">  babydev_struct.device_buf = (<span class="keyword">char</span> *)kmem_cache_alloc_trace(kmalloc_caches[<span class="number">6</span>], <span class="number">37748928L</span>L, <span class="number">64L</span>L);</span><br><span class="line">  babydev_struct.device_buf_len = <span class="number">64L</span>L;</span><br><span class="line">  printk(<span class="string">&quot;device open\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="babyioctl"><a href="#babyioctl" class="headerlink" title="babyioctl:"></a>babyioctl:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">__int64 __fastcall <span class="title">babyioctl</span><span class="params">(file *filp, <span class="keyword">unsigned</span> <span class="keyword">int</span> command, <span class="keyword">unsigned</span> __int64 arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v3; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">size_t</span> v4; <span class="comment">// rbx</span></span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, *(_QWORD *)&amp;command);</span><br><span class="line">  v4 = v3;</span><br><span class="line">  <span class="keyword">if</span> ( command == <span class="number">65537</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    kfree(babydev_struct.device_buf);</span><br><span class="line">    babydev_struct.device_buf = (<span class="keyword">char</span> *)_kmalloc(v4, <span class="number">37748928L</span>L);</span><br><span class="line">    babydev_struct.device_buf_len = v4;</span><br><span class="line">    printk(<span class="string">&quot;alloc done\n&quot;</span>);</span><br><span class="line">    result = <span class="number">0L</span>L;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    printk(&amp;unk_2EB);</span><br><span class="line">    result = <span class="number">-22L</span>L;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="babywrite"><a href="#babywrite" class="headerlink" title="babywrite:"></a>babywrite:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> __fastcall <span class="title">babywrite</span><span class="params">(file *filp, <span class="keyword">const</span> <span class="keyword">char</span> *buffer, <span class="keyword">size_t</span> length, <span class="keyword">loff_t</span> *offset)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v4; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">ssize_t</span> result; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">ssize_t</span> v6; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, buffer);</span><br><span class="line">  <span class="keyword">if</span> ( !babydev_struct.device_buf )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1L</span>L;</span><br><span class="line">  result = <span class="number">-2L</span>L;</span><br><span class="line">  <span class="keyword">if</span> ( babydev_struct.device_buf_len &gt; v4 )</span><br><span class="line">  &#123;</span><br><span class="line">    v6 = v4;</span><br><span class="line">    copy_from_user();</span><br><span class="line">    result = v6;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="babyread"><a href="#babyread" class="headerlink" title="babyread:"></a>babyread:</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> __fastcall <span class="title">babyread</span><span class="params">(file *filp, <span class="keyword">char</span> *buffer, <span class="keyword">size_t</span> length, <span class="keyword">loff_t</span> *offset)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v4; <span class="comment">// rdx</span></span><br><span class="line">  <span class="keyword">ssize_t</span> result; <span class="comment">// rax</span></span><br><span class="line">  <span class="keyword">ssize_t</span> v6; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, buffer);</span><br><span class="line">  <span class="keyword">if</span> ( !babydev_struct.device_buf )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1L</span>L;</span><br><span class="line">  result = <span class="number">-2L</span>L;</span><br><span class="line">  <span class="keyword">if</span> ( babydev_struct.device_buf_len &gt; v4 )</span><br><span class="line">  &#123;</span><br><span class="line">    v6 = v4;</span><br><span class="line">    copy_to_user(buffer);</span><br><span class="line">    result = v6;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>剩下等修好qemu再補上~</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/archives/Kernel-exploit/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
