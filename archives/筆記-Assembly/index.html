@@ -203,9 +203,7 @@
 <li>在stack上保存現在這個stack frame的base poiner(例如RBP)</li>
 <li>將base pointer對準stack address pointer(例如RSP)</li>
 <li>分配stack空間<a id="more"></a>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rbp</span><br><span class="line">mov rbp, rsp</span><br><span class="line">sub rsp, $offset</span><br></pre></td></tr></table></figure>
-
-</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">push rbp</span><br><span class="line">mov rbp, rsp</span><br><span class="line">sub rsp, $offset</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h1 id="Function-Epilogue"><a href="#Function-Epilogue" class="headerlink" title="Function Epilogue"></a>Function Epilogue</h1><p>也是一個寫法上的規定，是函數結束時需要做的事(ex.回收stack之類的)，配合Prologue, 可以讓程式執行時為各函數分配stack空間，也不會互相損毀各自的stack frame</p>
 <h2 id="Implemetation"><a href="#Implemetation" class="headerlink" title="Implemetation"></a>Implemetation</h2><p>基本上是將Prologue的流程反過來執行一次:</p>
