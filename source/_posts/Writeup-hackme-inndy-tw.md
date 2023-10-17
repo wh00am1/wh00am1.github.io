@@ -13,7 +13,7 @@ tags: pwn
 
 ## toooomuch
 猜數字遊戲，隨便一個二分搜就有答案
-
+<!-- more -->
 ## toooomuch2
 簡單的ROP，先利用 fgets()把shellcode吃到bss之後跳上去
 

@@ -9,6 +9,7 @@ Nope
 
 ## 分析
 程式僅有一OEP (entry 0)
+<!-- more -->
 ```asm
 ┌ 61: entry0 ();
 │           0x08048060      54             push esp                    ; [01] -r-x section size 67 named .text

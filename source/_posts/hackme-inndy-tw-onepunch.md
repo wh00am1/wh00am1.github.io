@@ -14,6 +14,7 @@ Punch!
 Partial RELRO, NX, Canary
 ## 分析
 main:
+<!-- more -->
 ```c
 int __cdecl main(int argc, const char **argv, const char **envp)
 {

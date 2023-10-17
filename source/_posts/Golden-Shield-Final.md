@@ -30,6 +30,7 @@ tags: pwn comps
 然後就拿到第三了XDD，直接拿一萬回家
 
 ### 決賽
+<!-- more -->
 這次我唯一解出的題目是 Reverse_教學題
 
 雖說是reverse啦，但看題敘可以明顯看出是有關Buffer Overflow，我引用一小段:
