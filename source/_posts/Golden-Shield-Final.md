@@ -1,9 +1,11 @@
 ---
 title: 2020年金盾獎
 date: 2020-10-17 21:03:22
-tags: pwn comps
+tags: 
+  - pwn
+  - comps
 ---
-
+<!-- more -->
 ## 心得寫在前
 ### 10/17 初賽
 這是我第一次參加金盾獎
@@ -30,7 +32,6 @@ tags: pwn comps
 然後就拿到第三了XDD，直接拿一萬回家
 
 ### 決賽
-<!-- more -->
 這次我唯一解出的題目是 Reverse_教學題
 
 雖說是reverse啦，但看題敘可以明顯看出是有關Buffer Overflow，我引用一小段:

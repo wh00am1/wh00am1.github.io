@@ -40,7 +40,7 @@ unsigned int orw_seccomp()
 ```
 在C語言有一種”SandBox模式”, 限制程式只能使用 `open()`, `read()`, `write()`
 
-可以通過`seccomp()`` 或是`prctl()`開啟
+可以通過`seccomp()` 或是`prctl()`開啟
 
 所以這裡的邏輯不重要, 只要知道只能 open, read, write就好
 
