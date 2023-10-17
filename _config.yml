@@ -2,8 +2,20 @@
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
 
+# MarkDown math settings (Using Katex)
+markdown:
+  render:
+    html: true
+    xhtmlOut: false
+    breaks: true
+    linkify: true
+    typographer: true
+    quotes: '“”‘’'
+  plugins:
+    - markdown-it-katex
+
 # Site
-title: 'wh0am1 Blog'
+title: "wh00am1's Notes"
 subtitle: ''
 description: ''
 keywords:
