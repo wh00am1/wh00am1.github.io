@@ -125,7 +125,16 @@ $$
 ### Computs Transition Matrices for $R^n$
 - [ new basis | old basis ] (use row operation)
 - [ $I$ | transition from old to new]
+- Or can be done with inverse:
+  - let $S=\{\vec{v_1}, \vec{v_2}, ..., \vec{v_n} \}$, $T=\{\vec{w_1}, \vec{w_2}, ..., \vec{w_n} \}$ :
+  - $[\vec{v_1}, \vec{v_2}, ..., \vec{v_n}][\vec{v}]_S = [\vec{w_1}, \vec{w_2}, ..., \vec{w_n}][\vec{v}]_T$
+  - Thus, let $\vec{A}_S$ and $\vec{A}_T$:
+  - $\vec{A}_S[\vec{v}]_S = \vec{A}_T[\vec{v}]_T$
+  - And can get:
+	- $\vec{P}_{S \gets T} = \vec{A}_S^{-1} \vec{A}_T[\vec{v}]_T$
+	- $\vec{P}_{T \gets S} = \vec{A}_T^{-1} \vec{A}_S[\vec{v}]_T$
 ### Transition to the Standard Basis
+#### Calculate
 - Given $B = \{\vec{u_1}, \vec{u_2}, ..., \vec{u_n} \}$ be any Basis for $R^n$, $S$ be standard Basis for $R^n$, then:
 $$
 P_{B \to S} = [ \vec{u_1} | \vec{u_2} | ... | \vec{u_n} ]
@@ -135,6 +144,11 @@ $$
 A = [ \vec{u_1} | \vec{u_2} | ... | \vec{u_n} ]
 $$
 Then  A can be viewed as Transition Matrix to Standard Basis
+#### Proterties
+- $rank[\vec{u_1}, \vec{u_2}, ..., \vec{u_k}] =k$
+- $\vec{u_i} \cdot \vec{u_j} = 1/0$
+- Any $\vec{v} = c_1\vec{u_1}, c_2\vec{u_2}, ..., c_k\vec{u_k}$, $c_i=\vec{v} \cdot \vec{u_i}$
+-
 ## Row Space, Column Space and Null Space
 ### Definition
 - In $m \times n$ matrix A:
@@ -145,6 +159,17 @@ Then  A can be viewed as Transition Matrix to Standard Basis
 	- Homogeneous $Ax=0$ sol' space : $null(A)$, the null space of $A$
 - Linear Sytem $Ax=b$ is consistent if:
 	- $b$ is in Column space of $A$
-### $Ax=b$ and $Ax=0$
-- 
 ## Rank, Nullity, Fundamental Matrix Spaces
+### Rank and Nullity
+Let $\vec{A} = [a_{ij}] \isin \vec{M}_{m \times n}$ :
+- $rank(\vec{A}) + nullity(\vec{A}) = n$
+	- $rank(\vec{A})$ : row column with leading $1$
+	- $nullity(\vec{A})$ : without leading $1$
+### Dimension of solution space
+Let $Ax=b$, $b \not =0$ :
+- $r_{[A b]} > r_A$ : No
+- $r_{[A b]} = r_A$ : 1
+- $r_{[A b]} < r_A$ : Multiple
+## Reference for this page:
+- https://www1.pu.edu.tw/~hdchen/handout_bank/mm/97_2_la_handout_05.pdf
+
