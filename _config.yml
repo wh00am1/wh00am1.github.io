@@ -39,9 +39,28 @@ markdown:
     permalink: true
     permalinkClass: header-anchor
     permalinkSymbol: ''
+# JS
+jsonContent:
+  meta: true
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: true
+    excerpt: false
+    categories: true
+    tags: true
 
 # Site
-title: "wh00am1's Notes"
+title: "wh00am1's Shelter"
 subtitle: ''
 description: ''
 keywords:
@@ -135,7 +154,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: archer
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

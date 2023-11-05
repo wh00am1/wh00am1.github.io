@@ -1,6 +1,6 @@
 ---
 title: Writeup::hackme.inndy.tw
-date: 2023-10-17 21:12:04
+date: 2021-10-17 21:12:04
 tags: pwn
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: hackme.inndy.tw::Rsbo & Rsbo 2
-date: 2023-10-17 21:24:55
+date: 2021-10-17 21:24:55
 tags: pwn
 ---
 
