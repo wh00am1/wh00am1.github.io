@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Vectors in space">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linear Algebra::Ch3">
+<meta property="og:url" content="https://wh00am1.github.io/2023/10/18/Linear-Algebra-Ch3/index.html">
+<meta property="og:site_name" content="wh00am1&#39;s Notes">
+<meta property="og:description" content="Vectors in space">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-10-18T15:22:49.000Z">
+<meta property="article:modified_time" content="2023-11-05T08:44:46.177Z">
+<meta property="article:author" content="wh00am1">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="linear algebra">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wh00am1.github.io/2023/10/18/Linear-Algebra-Ch3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linear Algebra::Ch3 | wh00am1's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">wh00am1's Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/2023/10/18/Linear-Algebra-Ch3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh00am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wh00am1's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linear Algebra::Ch3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-10-18 23:22:49" itemprop="dateCreated datePublished" datetime="2023-10-18T23:22:49+08:00">2023-10-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-11-05 16:44:46" itemprop="dateModified" datetime="2023-11-05T16:44:46+08:00">2023-11-05</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Vectors-in-space"><a href="#Vectors-in-space" class="headerlink" title="Vectors in space"></a>Vectors in space</h2><span id="more"></span>
+<h3 id="Parallel-and-Collinear"><a href="#Parallel-and-Collinear" class="headerlink" title="Parallel and Collinear"></a>Parallel and Collinear</h3><ul>
+<li>The vector $\vec{0}$ is regarded as parallel to all vectors</li>
+</ul>
+<h3 id="Initial-points"><a href="#Initial-points" class="headerlink" title="Initial points"></a>Initial points</h3><p>$$<br>\vec{P_1P_2} &#x3D; (x_2-x_1, y_2-y_1)<br>$$</p>
+<h3 id="n-Space"><a href="#n-Space" class="headerlink" title="n-Space"></a>n-Space</h3><ul>
+<li>$R^n&#x3D;(v_1, v_2, …, v_n)$ (ordered n-tuple)</li>
+</ul>
+<h4 id="Arithmetic"><a href="#Arithmetic" class="headerlink" title="Arithmetic"></a>Arithmetic</h4><ul>
+<li>Basic arithmetic</li>
+<li>$(k+m)u &#x3D; ku+mu$</li>
+<li>$1u&#x3D;u$</li>
+</ul>
+<h4 id="Linear-combination"><a href="#Linear-combination" class="headerlink" title="Linear combination"></a>Linear combination</h4><h2 id="Norm-Dot-Distance"><a href="#Norm-Dot-Distance" class="headerlink" title="Norm, Dot, Distance"></a>Norm, Dot, Distance</h2><h3 id="Norm"><a href="#Norm" class="headerlink" title="Norm"></a>Norm</h3><h4 id="Basics"><a href="#Basics" class="headerlink" title="Basics"></a>Basics</h4><p>$$<br>| \vec{v} | &#x3D; \sqrt{(v_1)^2+(v_2)^2+…+(v_n)^2}<br>$$</p>
+<h4 id="Normalize"><a href="#Normalize" class="headerlink" title="Normalize"></a>Normalize</h4><p>$$<br>u &#x3D; \frac{1}{| \vec{v} |} v<br>$$</p>
+<h3 id="Dot"><a href="#Dot" class="headerlink" title="Dot"></a>Dot</h3><h4 id="In-2D-and-3D"><a href="#In-2D-and-3D" class="headerlink" title="In 2D and 3D"></a>In 2D and 3D</h4><p>$$<br>\vec{u} \cdot \vec{v} &#x3D; | \vec{u} | | \vec{v} | cos \theta &#x3D; \frac{1}{2}(| \vec{u} |^2+| \vec{v} |^2-| \vec{u} - \vec{v} |^2)<br>$$</p>
+<h4 id="In-R-n"><a href="#In-R-n" class="headerlink" title="In $R^n$"></a>In $R^n$</h4><p>$$<br>\vec{u} \cdot \vec{v} &#x3D; u_1v_1 + u_2v_2 + … + u_nv_n<br>$$</p>
+<h3 id="Distance-in-R-n"><a href="#Distance-in-R-n" class="headerlink" title="Distance in $R^n$"></a>Distance in $R^n$</h3><p>$$<br>d(u, v) &#x3D; | u-v | &#x3D; \sqrt{\sum{(u_i-v_i)^2}}<br>$$</p>
+<h2 id="Orthogonality-正交"><a href="#Orthogonality-正交" class="headerlink" title="Orthogonality(正交)"></a>Orthogonality(正交)</h2><h3 id="Basics-1"><a href="#Basics-1" class="headerlink" title="Basics"></a>Basics</h3><ul>
+<li>Dot &#x3D; 0</li>
+</ul>
+<h3 id="Line-and-Plane-based-on-Point-and-Normal"><a href="#Line-and-Plane-based-on-Point-and-Normal" class="headerlink" title="Line and Plane based on Point and Normal"></a>Line and Plane based on Point and Normal</h3><ul>
+<li>Normal :<br>$$<br>\vec{n} \cdot \vec{L} &#x3D; 0<br>$$</li>
+<li>Can be written(normal : $n(a, b, c)$):<br>$$<br>a(x-x_0)+b(y-y_0)+c(z-z_0)&#x3D;0<br>$$</li>
+</ul>
+<h3 id="Orthogonality-Projection"><a href="#Orthogonality-Projection" class="headerlink" title="Orthogonality Projection"></a>Orthogonality Projection</h3><p>$$<br>proj_a u &#x3D; \frac{u \cdot a}{| \vec{a} |^2} a<br>$$</p>
+<h3 id="Distance-of-Line-and-Plane"><a href="#Distance-of-Line-and-Plane" class="headerlink" title="Distance of Line and Plane"></a>Distance of Line and Plane</h3><p>$$<br>D &#x3D; \frac{| ax_0 + by_0 + c |}{\sqrt{a^2 + b^2 + c^2}}<br>$$</p>
+<h2 id="Geometry-of-linear-system"><a href="#Geometry-of-linear-system" class="headerlink" title="Geometry of linear system"></a>Geometry of linear system</h2><h3 id="Parametric-Equations"><a href="#Parametric-Equations" class="headerlink" title="Parametric Equations"></a>Parametric Equations</h3><p>$$<br>x &#x3D; x_0 + t \vec{v}<br>$$</p>
+<h3 id="Dot-product-of-Linear-System"><a href="#Dot-product-of-Linear-System" class="headerlink" title="Dot product of Linear System"></a>Dot product of Linear System</h3><ul>
+<li>A and x is orthogonal in homogeneous linear system</li>
+</ul>
+<h2 id="Cross-product"><a href="#Cross-product" class="headerlink" title="Cross product"></a>Cross product</h2><h3 id="Cross-product-of-vectors"><a href="#Cross-product-of-vectors" class="headerlink" title="Cross product of vectors"></a>Cross product of vectors</h3><p>let $\vec{u}$ and $\vec{v}$ be in 3-space<br>$$<br>\vec{u} \times \vec{v} &#x3D; (u_2v_3 - u_3v_2, u_3v_1-u_1v_3, u_1v_2 - u_2v_1)<br>$$</p>
+<h3 id="Determinant-form"><a href="#Determinant-form" class="headerlink" title="Determinant form"></a>Determinant form</h3><h3 id="Geometric-interpretation"><a href="#Geometric-interpretation" class="headerlink" title="Geometric interpretation"></a>Geometric interpretation</h3><p>$$<br>| \vec{u} \times \vec{v} |^2 &#x3D; | \vec{u} |^2 | \vec{v} |^2 sin \theta<br>$$</p>
+<h3 id="Triple-Product"><a href="#Triple-Product" class="headerlink" title="Triple Product"></a>Triple Product</h3><p>$$<br>\vec{u} \times \vec{v} \cdot \vec{w}<br>$$</p>
+<ul>
+<li>四面體體積 &#x3D; Triple product &#x2F; 6</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/notes/" rel="tag"># notes</a>
+              <a href="/tags/linear-algebra/" rel="tag"># linear algebra</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/18/Linear-Algebra-Ch2/" rel="prev" title="Linear Algebra::Ch2">
+      <i class="fa fa-chevron-left"></i> Linear Algebra::Ch2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/21/Linear-Algebra-Ch4/" rel="next" title="Linear Algebra::Ch4">
+      Linear Algebra::Ch4 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vectors-in-space"><span class="nav-number">1.</span> <span class="nav-text">Vectors in space</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallel-and-Collinear"><span class="nav-number">1.1.</span> <span class="nav-text">Parallel and Collinear</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Initial-points"><span class="nav-number">1.2.</span> <span class="nav-text">Initial points</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-Space"><span class="nav-number">1.3.</span> <span class="nav-text">n-Space</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Arithmetic"><span class="nav-number">1.3.1.</span> <span class="nav-text">Arithmetic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Linear-combination"><span class="nav-number">1.3.2.</span> <span class="nav-text">Linear combination</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Norm-Dot-Distance"><span class="nav-number">2.</span> <span class="nav-text">Norm, Dot, Distance</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Norm"><span class="nav-number">2.1.</span> <span class="nav-text">Norm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Basics"><span class="nav-number">2.1.1.</span> <span class="nav-text">Basics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Normalize"><span class="nav-number">2.1.2.</span> <span class="nav-text">Normalize</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dot"><span class="nav-number">2.2.</span> <span class="nav-text">Dot</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#In-2D-and-3D"><span class="nav-number">2.2.1.</span> <span class="nav-text">In 2D and 3D</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#In-R-n"><span class="nav-number">2.2.2.</span> <span class="nav-text">In $R^n$</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Distance-in-R-n"><span class="nav-number">2.3.</span> <span class="nav-text">Distance in $R^n$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Orthogonality-%E6%AD%A3%E4%BA%A4"><span class="nav-number">3.</span> <span class="nav-text">Orthogonality(正交)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basics-1"><span class="nav-number">3.1.</span> <span class="nav-text">Basics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Line-and-Plane-based-on-Point-and-Normal"><span class="nav-number">3.2.</span> <span class="nav-text">Line and Plane based on Point and Normal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Orthogonality-Projection"><span class="nav-number">3.3.</span> <span class="nav-text">Orthogonality Projection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Distance-of-Line-and-Plane"><span class="nav-number">3.4.</span> <span class="nav-text">Distance of Line and Plane</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Geometry-of-linear-system"><span class="nav-number">4.</span> <span class="nav-text">Geometry of linear system</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Parametric-Equations"><span class="nav-number">4.1.</span> <span class="nav-text">Parametric Equations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dot-product-of-Linear-System"><span class="nav-number">4.2.</span> <span class="nav-text">Dot product of Linear System</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cross-product"><span class="nav-number">5.</span> <span class="nav-text">Cross product</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cross-product-of-vectors"><span class="nav-number">5.1.</span> <span class="nav-text">Cross product of vectors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Determinant-form"><span class="nav-number">5.2.</span> <span class="nav-text">Determinant form</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Geometric-interpretation"><span class="nav-number">5.3.</span> <span class="nav-text">Geometric interpretation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Triple-Product"><span class="nav-number">5.4.</span> <span class="nav-text">Triple Product</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wh00am1</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wh00am1</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

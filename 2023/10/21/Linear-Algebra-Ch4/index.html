@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wh00am1.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Real Vector Spaces">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linear Algebra::Ch4">
+<meta property="og:url" content="https://wh00am1.github.io/2023/10/21/Linear-Algebra-Ch4/index.html">
+<meta property="og:site_name" content="wh00am1&#39;s Notes">
+<meta property="og:description" content="Real Vector Spaces">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-10-21T05:43:16.000Z">
+<meta property="article:modified_time" content="2023-11-05T08:44:46.177Z">
+<meta property="article:author" content="wh00am1">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="linear algebra">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wh00am1.github.io/2023/10/21/Linear-Algebra-Ch4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linear Algebra::Ch4 | wh00am1's Notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">wh00am1's Notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://wh00am1.github.io/2023/10/21/Linear-Algebra-Ch4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="wh00am1">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wh00am1's Notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linear Algebra::Ch4
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-10-21 13:43:16" itemprop="dateCreated datePublished" datetime="2023-10-21T13:43:16+08:00">2023-10-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-11-05 16:44:46" itemprop="dateModified" datetime="2023-11-05T16:44:46+08:00">2023-11-05</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Real-Vector-Spaces"><a href="#Real-Vector-Spaces" class="headerlink" title="Real Vector Spaces"></a>Real Vector Spaces</h2><span id="more"></span>
+<h3 id="Axioms"><a href="#Axioms" class="headerlink" title="Axioms"></a>Axioms</h3><ul>
+<li>8 Axioms from $R^n$</li>
+<li><strong>Zero Vector</strong> exists in $V$ that $0+u &#x3D; u+0$ for all $u$ in $V$</li>
+<li>For each $u$ in $V$ exists $-u$</li>
+<li>The elimination method works</li>
+<li>$0u &#x3D; 0$</li>
+</ul>
+<h2 id="Subspaces"><a href="#Subspaces" class="headerlink" title="Subspaces"></a>Subspaces</h2><h3 id="Terminology"><a href="#Terminology" class="headerlink" title="Terminology"></a>Terminology</h3><h4 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h4><ul>
+<li>Subset $W$ is under scalar manipulation defined in $V$ </li>
+<li>Not inherited Axioms:<ul>
+<li>Closure of $W$ (under addition and multiplication)</li>
+<li>Zero vector in $W$</li>
+<li>Exist a negative one for all vector in $W$</li>
+</ul>
+</li>
+</ul>
+<h3 id="Testing-subspaces"><a href="#Testing-subspaces" class="headerlink" title="Testing subspaces"></a>Testing subspaces</h3><ul>
+<li>$u+v$ in $W$</li>
+<li>$ku$ in $W$</li>
+</ul>
+<h3 id="Building-Subspaces"><a href="#Building-Subspaces" class="headerlink" title="Building Subspaces"></a>Building Subspaces</h3><h4 id="Creating-from-known-Subspaces"><a href="#Creating-from-known-Subspaces" class="headerlink" title="Creating from known Subspaces"></a>Creating from known Subspaces</h4><ul>
+<li>For subspace $W_1, W_2, …, W_n$, the intersections are also subspace of $V$</li>
+</ul>
+<h4 id="Solution-Spaces-of-Homogeneous"><a href="#Solution-Spaces-of-Homogeneous" class="headerlink" title="Solution Spaces of Homogeneous"></a>Solution Spaces of Homogeneous</h4><ul>
+<li>$n$ unknowns : subspace of $R^n$</li>
+</ul>
+<h4 id="Linear-transformation"><a href="#Linear-transformation" class="headerlink" title="Linear transformation"></a>Linear transformation</h4><ul>
+<li>Kernel of transformation is a subspace of $R^n$</li>
+</ul>
+<h2 id="Spanning-Sets-生成空間"><a href="#Spanning-Sets-生成空間" class="headerlink" title="Spanning Sets(生成空間)"></a>Spanning Sets(生成空間)</h2><h3 id="Definition-1"><a href="#Definition-1" class="headerlink" title="Definition"></a>Definition</h3><ul>
+<li>Given subset $S&#x3D;{ \vec{v_1}, \vec{v_2}, …, \vec{v_n} }$ from $V$:<br>$$<br>span(S) &#x3D; span( \vec{v_1}, \vec{v_2}, …, \vec{v_n} )<br>$$</li>
+<li>$span(S)$ can also be defined as a set of all Linear Combination formed by the element in $S$</li>
+<li>If Vector Space $V$ and Set $S$ are both infinite, the Linear Combinations are not guaranteed to be in $span(S)$</li>
+</ul>
+<h2 id="Linear-Independence"><a href="#Linear-Independence" class="headerlink" title="Linear Independence"></a>Linear Independence</h2><h3 id="Definition-2"><a href="#Definition-2" class="headerlink" title="Definition"></a>Definition</h3><ul>
+<li>Given $V$ in Field $K$ ($ \vec{v_1}, \vec{v_2}, …, \vec{v_n}$ and $a_1, a_2, …, a_n$), if the following does not exits in $K$:<br>$$<br>a_1 \vec{v_1} + a_2 \vec{v_2} + … + a_n \vec{v_n} &#x3D; 0<br>$$</li>
+<li>If any Subset of infinite Set in $V$ is Linearly Independent, the original Set is Linearly Independent</li>
+</ul>
+<h3 id="Properties"><a href="#Properties" class="headerlink" title="Properties"></a>Properties</h3><ul>
+<li>The following Vector Sets are <strong>Linearly Dependent</strong>:<ul>
+<li>Contains $\vec{0}$</li>
+<li>Contains two same vectors</li>
+<li>A Linear Dependent Set with one more arbitrary vector</li>
+<li><code>sizeof(Set)&gt;n</code></li>
+</ul>
+</li>
+<li>Dependent or not remains the same:<ul>
+<li>Part of Linear Independent</li>
+<li>Adding component vector in every vector</li>
+</ul>
+</li>
+<li>If <code>set1</code> with size <code>sz1</code> can be expressed in Linear Combination of <code>set2</code> with <code>sz2</code> where <code>sz1</code>&gt;<code>sz2</code>, <code>set1</code> is<br>  Linearly Dependent</li>
+</ul>
+<h2 id="Coordinates-and-Basis"><a href="#Coordinates-and-Basis" class="headerlink" title="Coordinates and Basis"></a>Coordinates and Basis</h2><h3 id="Coordinate-system"><a href="#Coordinate-system" class="headerlink" title="Coordinate system"></a>Coordinate system</h3><ul>
+<li>Non-perpendicular axes</li>
+</ul>
+<h3 id="Basis"><a href="#Basis" class="headerlink" title="Basis"></a>Basis</h3><h4 id="Definition-3"><a href="#Definition-3" class="headerlink" title="Definition"></a>Definition</h4><ul>
+<li>$S$ is Basis for $V$ if:<ul>
+<li>$S$ spans $V$</li>
+<li>$S$ is Linearly Independent</li>
+</ul>
+</li>
+</ul>
+<h3 id="Relative"><a href="#Relative" class="headerlink" title="Relative"></a>Relative</h3><ul>
+<li>If $S{v_j}$ is Basis of $V{v_i}$:<ul>
+<li>$\vec{v_i} &#x3D; \sum{c_j \vec{v_j}}$</li>
+<li>Scalars $c$ are <strong>coordinates of $v_i$ to ordered S</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="Dimension"><a href="#Dimension" class="headerlink" title="Dimension"></a>Dimension</h2><h3 id="Fundamental-theorems"><a href="#Fundamental-theorems" class="headerlink" title="Fundamental theorems"></a>Fundamental theorems</h3><ul>
+<li>All bases for a Finite-Dimensional Vector Space have same number of vectors</li>
+<li>Given $V$, and any Basis of $V&#x3D;{v_1, v_2, …, v_n}$<ul>
+<li>If a Set in V <code>sizeof(Set)&gt;n</code>, it’s Linearly Dependent</li>
+<li>If <code>sizeof(Set)&lt;n</code>, it’s not able to span $V$</li>
+</ul>
+</li>
+<li>Dimension of $V$ ( or $dim(V)$ ) &#x3D; $n$<ul>
+<li>$dim(R^n) &#x3D; n$</li>
+<li>$dim(P_n) &#x3D; n+1$</li>
+<li>$dim(M_{mn}) &#x3D; mn$</li>
+<li>$dim(span(v_1, v_2, …, v_n)) &#x3D; n$</li>
+<li>Dimension of Solution Space is the least number of unknowns to express solution</li>
+</ul>
+</li>
+</ul>
+<h3 id="Other-theorems"><a href="#Other-theorems" class="headerlink" title="Other theorems"></a>Other theorems</h3><ul>
+<li>Plus&#x2F;Minus Theorem<br>Let $S$ be nonempty subset of $V$:<ul>
+<li>Inserting $\vec{v}$ that’s not in $span(S)$ wont make become $S$ Linearly Dependent</li>
+<li>$span(S) &#x3D; span(S - {v}) if $\vec{v}$ can be expressed as Linear Combination in $S$</li>
+</ul>
+</li>
+<li>Given $V$ is $n$-dimensional, and subset $S$ with size $n$:<ul>
+<li>$S$ is Basis for $V$ if :<ul>
+<li>$S$ spans $V$</li>
+<li>$S$ is Linearly Independent</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Given $S$ be finite subset of finite-dimensional $V$:<ul>
+<li>If $S$ spans $V$ : $S$ can be reduced to a Basis for $V$</li>
+<li>If $S$ if Linearly Independent set: $S$ can be enlarged to a basis for $V$</li>
+</ul>
+</li>
+<li>Given $S$ a subspace of finite-dimensional vector space $V$:<ul>
+<li>$S$ is finite-dimensional</li>
+<li>$dim(S) \leqq dim(V)$</li>
+<li>$S&#x3D;V$ if $dim(S) &#x3D; dim(V)$</li>
+</ul>
+</li>
+</ul>
+<h2 id="Change-of-Basis"><a href="#Change-of-Basis" class="headerlink" title="Change of Basis"></a>Change of Basis</h2><h3 id="Change-of-Basis-Problem"><a href="#Change-of-Basis-Problem" class="headerlink" title="Change-of-Basis Problem"></a>Change-of-Basis Problem</h3><h4 id="2D-Spaces"><a href="#2D-Spaces" class="headerlink" title="2D Spaces"></a>2D Spaces</h4><ol>
+<li>Basis $B &#x3D; {\vec{u_1}, \vec{u_2}}$ and $B’ &#x3D; {\vec{u_1’}, \vec{u_2’}}$</li>
+<li>Suppose coordinate vectors relative to the new basis are:<br>$$<br>\vec{u_1}  &#x3D; a \vec{u_1’} + b \vec{u_2’} \<br>\vec{u_2} &#x3D; c \vec{u_1’} + d \vec{u_2’}<br>$$</li>
+<li>Suppose old coordinate for any vector $\vec{v}$ in $V$:<br>$$<br>[\vec{v}]_{B’} &#x3D; [k_1 \vec{u_1}, \quad k_2 \vec{u_2}]<br>$$</li>
+<li>Substitute the above statements amd get new coordinate vector<br>$$<br>\vec{v} &#x3D; k_1(a u_1’ + b  u_2’) + k_2(c u_1’ + d u_2’)<br>$$<br>$$<br>[\vec{v}]_{B’} &#x3D; [k_1a + k_2c, \quad k_1b + k_2 d]<br>$$</li>
+<li>States taht the new coordinate vector is the old coordinate vector multiplied by:<br>$$<br>P &#x3D; \begin{bmatrix} a &amp; b \ c &amp; d \end{bmatrix}<br>$$</li>
+</ol>
+<h3 id="Computs-Transition-Matrices-for-R-n"><a href="#Computs-Transition-Matrices-for-R-n" class="headerlink" title="Computs Transition Matrices for $R^n$"></a>Computs Transition Matrices for $R^n$</h3><ul>
+<li>[ new basis | old basis ] (use row operation)</li>
+<li>[ $I$ | transition from old to new]</li>
+<li>Or can be done with inverse:<ul>
+<li>let $S&#x3D;{\vec{v_1}, \vec{v_2}, …, \vec{v_n} }$, $T&#x3D;{\vec{w_1}, \vec{w_2}, …, \vec{w_n} }$ :</li>
+<li>$[\vec{v_1}, \vec{v_2}, …, \vec{v_n}][\vec{v}]_S &#x3D; [\vec{w_1}, \vec{w_2}, …, \vec{w_n}][\vec{v}]_T$</li>
+<li>Thus, let $\vec{A}_S$ and $\vec{A}_T$:</li>
+<li>$\vec{A}_S[\vec{v}]_S &#x3D; \vec{A}_T[\vec{v}]_T$</li>
+<li>And can get:<ul>
+<li>$\vec{P}_{S \gets T} &#x3D; \vec{A}_S^{-1} \vec{A}_T[\vec{v}]_T$</li>
+<li>$\vec{P}_{T \gets S} &#x3D; \vec{A}_T^{-1} \vec{A}_S[\vec{v}]_T$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Transition-to-the-Standard-Basis"><a href="#Transition-to-the-Standard-Basis" class="headerlink" title="Transition to the Standard Basis"></a>Transition to the Standard Basis</h3><h4 id="Calculate"><a href="#Calculate" class="headerlink" title="Calculate"></a>Calculate</h4><ul>
+<li>Given $B &#x3D; {\vec{u_1}, \vec{u_2}, …, \vec{u_n} }$ be any Basis for $R^n$, $S$ be standard Basis for $R^n$, then:<br>$$<br>P_{B \to S} &#x3D; [ \vec{u_1} | \vec{u_2} | … | \vec{u_n} ]<br>$$</li>
+<li>Also if the following is invertible:<br>$$<br>A &#x3D; [ \vec{u_1} | \vec{u_2} | … | \vec{u_n} ]<br>$$<br>Then  A can be viewed as Transition Matrix to Standard Basis</li>
+</ul>
+<h4 id="Proterties"><a href="#Proterties" class="headerlink" title="Proterties"></a>Proterties</h4><ul>
+<li>$rank[\vec{u_1}, \vec{u_2}, …, \vec{u_k}] &#x3D;k$</li>
+<li>$\vec{u_i} \cdot \vec{u_j} &#x3D; 1&#x2F;0$</li>
+<li>Any $\vec{v} &#x3D; c_1\vec{u_1}, c_2\vec{u_2}, …, c_k\vec{u_k}$, $c_i&#x3D;\vec{v} \cdot \vec{u_i}$</li>
+<li></li>
+</ul>
+<h2 id="Row-Space-Column-Space-and-Null-Space"><a href="#Row-Space-Column-Space-and-Null-Space" class="headerlink" title="Row Space, Column Space and Null Space"></a>Row Space, Column Space and Null Space</h2><h3 id="Definition-4"><a href="#Definition-4" class="headerlink" title="Definition"></a>Definition</h3><ul>
+<li>In $m \times n$ matrix A:<ul>
+<li>Row vectors : in $R^n$ form</li>
+<li>Column vectors : in $R^m$ form</li>
+<li>$row(A)$ : subspace of $R^n$ spanned by row vectors</li>
+<li>$col(A)$ : subspace of $R^n$ spanned by column vectors</li>
+<li>Homogeneous $Ax&#x3D;0$ sol’ space : $null(A)$, the null space of $A$</li>
+</ul>
+</li>
+<li>Linear Sytem $Ax&#x3D;b$ is consistent if:<ul>
+<li>$b$ is in Column space of $A$</li>
+</ul>
+</li>
+</ul>
+<h2 id="Rank-Nullity-Fundamental-Matrix-Spaces"><a href="#Rank-Nullity-Fundamental-Matrix-Spaces" class="headerlink" title="Rank, Nullity, Fundamental Matrix Spaces"></a>Rank, Nullity, Fundamental Matrix Spaces</h2><h3 id="Rank-and-Nullity"><a href="#Rank-and-Nullity" class="headerlink" title="Rank and Nullity"></a>Rank and Nullity</h3><p>Let $\vec{A} &#x3D; [a_{ij}] \isin \vec{M}_{m \times n}$ :</p>
+<ul>
+<li>$rank(\vec{A}) + nullity(\vec{A}) &#x3D; n$<ul>
+<li>$rank(\vec{A})$ : row column with leading $1$</li>
+<li>$nullity(\vec{A})$ : without leading $1$</li>
+</ul>
+</li>
+</ul>
+<h3 id="Dimension-of-solution-space"><a href="#Dimension-of-solution-space" class="headerlink" title="Dimension of solution space"></a>Dimension of solution space</h3><p>Let $Ax&#x3D;b$, $b \not &#x3D;0$ :</p>
+<ul>
+<li>$r_{[A b]} &gt; r_A$ : No</li>
+<li>$r_{[A b]} &#x3D; r_A$ : 1</li>
+<li>$r_{[A b]} &lt; r_A$ : Multiple</li>
+</ul>
+<h2 id="Reference-for-this-page"><a href="#Reference-for-this-page" class="headerlink" title="Reference for this page:"></a>Reference for this page:</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www1.pu.edu.tw/~hdchen/handout_bank/mm/97_2_la_handout_05.pdf">https://www1.pu.edu.tw/~hdchen/handout_bank/mm/97_2_la_handout_05.pdf</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/notes/" rel="tag"># notes</a>
+              <a href="/tags/linear-algebra/" rel="tag"># linear algebra</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/18/Linear-Algebra-Ch3/" rel="prev" title="Linear Algebra::Ch3">
+      <i class="fa fa-chevron-left"></i> Linear Algebra::Ch3
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/27/Software-Engineering-Ch1/" rel="next" title="Software Engineering::Ch1">
+      Software Engineering::Ch1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Real-Vector-Spaces"><span class="nav-number">1.</span> <span class="nav-text">Real Vector Spaces</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Axioms"><span class="nav-number">1.1.</span> <span class="nav-text">Axioms</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subspaces"><span class="nav-number">2.</span> <span class="nav-text">Subspaces</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Terminology"><span class="nav-number">2.1.</span> <span class="nav-text">Terminology</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Definition"><span class="nav-number">2.1.1.</span> <span class="nav-text">Definition</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Testing-subspaces"><span class="nav-number">2.2.</span> <span class="nav-text">Testing subspaces</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Building-Subspaces"><span class="nav-number">2.3.</span> <span class="nav-text">Building Subspaces</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Creating-from-known-Subspaces"><span class="nav-number">2.3.1.</span> <span class="nav-text">Creating from known Subspaces</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solution-Spaces-of-Homogeneous"><span class="nav-number">2.3.2.</span> <span class="nav-text">Solution Spaces of Homogeneous</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Linear-transformation"><span class="nav-number">2.3.3.</span> <span class="nav-text">Linear transformation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spanning-Sets-%E7%94%9F%E6%88%90%E7%A9%BA%E9%96%93"><span class="nav-number">3.</span> <span class="nav-text">Spanning Sets(生成空間)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition-1"><span class="nav-number">3.1.</span> <span class="nav-text">Definition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linear-Independence"><span class="nav-number">4.</span> <span class="nav-text">Linear Independence</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition-2"><span class="nav-number">4.1.</span> <span class="nav-text">Definition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Properties"><span class="nav-number">4.2.</span> <span class="nav-text">Properties</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Coordinates-and-Basis"><span class="nav-number">5.</span> <span class="nav-text">Coordinates and Basis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Coordinate-system"><span class="nav-number">5.1.</span> <span class="nav-text">Coordinate system</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basis"><span class="nav-number">5.2.</span> <span class="nav-text">Basis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Definition-3"><span class="nav-number">5.2.1.</span> <span class="nav-text">Definition</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Relative"><span class="nav-number">5.3.</span> <span class="nav-text">Relative</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dimension"><span class="nav-number">6.</span> <span class="nav-text">Dimension</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fundamental-theorems"><span class="nav-number">6.1.</span> <span class="nav-text">Fundamental theorems</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Other-theorems"><span class="nav-number">6.2.</span> <span class="nav-text">Other theorems</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Change-of-Basis"><span class="nav-number">7.</span> <span class="nav-text">Change of Basis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Change-of-Basis-Problem"><span class="nav-number">7.1.</span> <span class="nav-text">Change-of-Basis Problem</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2D-Spaces"><span class="nav-number">7.1.1.</span> <span class="nav-text">2D Spaces</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Computs-Transition-Matrices-for-R-n"><span class="nav-number">7.2.</span> <span class="nav-text">Computs Transition Matrices for $R^n$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transition-to-the-Standard-Basis"><span class="nav-number">7.3.</span> <span class="nav-text">Transition to the Standard Basis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Calculate"><span class="nav-number">7.3.1.</span> <span class="nav-text">Calculate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Proterties"><span class="nav-number">7.3.2.</span> <span class="nav-text">Proterties</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Row-Space-Column-Space-and-Null-Space"><span class="nav-number">8.</span> <span class="nav-text">Row Space, Column Space and Null Space</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition-4"><span class="nav-number">8.1.</span> <span class="nav-text">Definition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rank-Nullity-Fundamental-Matrix-Spaces"><span class="nav-number">9.</span> <span class="nav-text">Rank, Nullity, Fundamental Matrix Spaces</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rank-and-Nullity"><span class="nav-number">9.1.</span> <span class="nav-text">Rank and Nullity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dimension-of-solution-space"><span class="nav-number">9.2.</span> <span class="nav-text">Dimension of solution space</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference-for-this-page"><span class="nav-number">10.</span> <span class="nav-text">Reference for this page:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">wh00am1</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wh00am1</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
