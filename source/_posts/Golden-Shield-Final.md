@@ -4,6 +4,7 @@ date: 2020-12-17 21:03:22
 tags: 
   - pwn
   - comps
+  - write ups
 ---
 
 ## 心得寫在前

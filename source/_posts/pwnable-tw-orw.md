@@ -1,7 +1,9 @@
 ---
 title: pwnable.tw::orw
 date: 2021-10-17 21:29:57
-tags: pwn
+tags: 
+    - pwn
+    - write ups
 ---
 
 ## 保護機制

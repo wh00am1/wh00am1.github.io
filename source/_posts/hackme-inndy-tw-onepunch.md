@@ -1,7 +1,9 @@
 ---
 title: hackme.inndy.tw::onepunch
 date: 2021-10-17 21:18:49
-tags: pwn
+tags: 
+    - pwn
+    - write ups
 ---
 
 ## challenge
