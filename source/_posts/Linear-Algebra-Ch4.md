@@ -42,7 +42,7 @@ $$
 - If Vector Space $V$ and Set $S$ are both infinite, the Linear Combinations are not guaranteed to be in $span(S)$
 ## Linear Independence
 ### Definition
-- Given $V$ in Field $K$ ($ \vec{v_1}, \vec{v_2}, ..., \vec{v_n}$ and $a_1, a_2, ..., a_n$), if the following does not exits in $K$:
+- Given $V$ in Field $K$ ( $\vec{v_1}, \vec{v_2}, ..., \vec{v_n}$ and $a_1, a_2, ..., a_n$ ), if the following does not exits in $K$:
 $$
 a_1 \vec{v_1} + a_2 \vec{v_2} + ... + a_n \vec{v_n} = 0
 $$
