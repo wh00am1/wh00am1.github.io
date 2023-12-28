@@ -47,3 +47,12 @@ tags:
     - $M = \begin{bmatrix} 1 & x_{1} \\ ... & ... \\ 1 & x_{n} \end{bmatrix}$
     - $y = \begin{bmatrix} y_{1} \\ ... \\ y_{n} \end{bmatrix}$
     - $M^TM \vec{v} = M^T \vec{y}$
+## Function approximation
+- Least square
+    - Error : $\int_{a}^{b} |f(x)-g(x)|dx$
+    - Mean square error : $\int_{a}^{b} [f(x)-g(x)]^{2} dx$
+    - Inner product : $<f, g> = \int_{a}^{b} f(x)g(x)dx$
+    - In subspace $W \isin C[a, b]$ , find such g min : $\int_{a}^{b} [f(x)-g(x)]^{2} dx$
+- Fourier series
+    - Triginometric polynomial : $T(x) = c_{0} + (c_{1}\cos(x) + ... + c_{n}\cos(nx)) + (d_{1}\sin(x) + ... + d_{n}\sin(nx))$
+    - Fourier coefficient : $a_{k} = f(x)\cos(kx)dx, \quad b_{k} = f(x)\sin(kx)dx$
