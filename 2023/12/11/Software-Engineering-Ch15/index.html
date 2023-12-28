@@ -19,14 +19,18 @@
         <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta property="og:type" content="article">
+    <meta name="description" content="System design  Stimulus&#x2F;response system  Periodic : predictable Aperiodic : not predictable   Modeling  State machine    Real-time OS  Process management  Inerrupt level Clock level   Schedueling stra">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Software Engineering::Ch15">
 <meta property="og:url" content="https://wh00am1.github.io/2023/12/11/Software-Engineering-Ch15/index.html">
 <meta property="og:site_name" content="wh00am1&#39;s Shelter">
+<meta property="og:description" content="System design  Stimulus&#x2F;response system  Periodic : predictable Aperiodic : not predictable   Modeling  State machine    Real-time OS  Process management  Inerrupt level Clock level   Schedueling stra">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-12-11T04:47:50.000Z">
-<meta property="article:modified_time" content="2023-12-11T04:47:50.628Z">
+<meta property="article:modified_time" content="2023-12-28T15:29:08.097Z">
 <meta property="article:author" content="wh00am1">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="software engineering">
 <meta name="twitter:card" content="summary">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -324,6 +328,10 @@
                     <div class= post-intro-tags >
     
     
+        <a class="post-tag" href="javascript:void(0);" data-tags="notes">notes</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="software engineering">software engineering</a>
+    
 </div>
 
                 
@@ -487,7 +495,46 @@
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
-        
+        <h2 id="system-design"><a class="header-anchor" href="#system-design"></a>System design</h2>
+<ul>
+<li>Stimulus/response system
+<ul>
+<li>Periodic : predictable</li>
+<li>Aperiodic : not predictable</li>
+</ul>
+</li>
+<li>Modeling
+<ul>
+<li>State machine</li>
+</ul>
+</li>
+</ul>
+<h2 id="real-time-os"><a class="header-anchor" href="#real-time-os"></a>Real-time OS</h2>
+<ul>
+<li>Process management
+<ul>
+<li>Inerrupt level</li>
+<li>Clock level</li>
+</ul>
+</li>
+<li>Schedueling strats
+<ul>
+<li>Non preemptive : Runs to end til interrupt</li>
+<li>Preemptive : Runs til a higher priority process require service</li>
+</ul>
+</li>
+</ul>
+<h2 id="moniter-control"><a class="header-anchor" href="#moniter-control"></a>Moniter &amp; control</h2>
+<ul>
+<li>RTOS</li>
+</ul>
+<h2 id="data-acquisition-system"><a class="header-anchor" href="#data-acquisition-system"></a>Data acquisition system</h2>
+<ul>
+<li>RTOS</li>
+<li>Collects from sensor</li>
+<li>Sequence of processing</li>
+</ul>
+
     </article>
     <!-- license -->
     
@@ -495,7 +542,7 @@
             <p>Author：<a href="https://wh00am1.github.io">wh00am1</a>
             <p>Link：<a href="https://wh00am1.github.io/2023/12/11/Software-Engineering-Ch15/">https://wh00am1.github.io/2023/12/11/Software-Engineering-Ch15/</a>
             <p>Publish date：<a href="https://wh00am1.github.io/2023/12/11/Software-Engineering-Ch15/">December 11th 2023, 12:47:50 pm</a>
-            <p>Update date：<a href="https://wh00am1.github.io/2023/12/11/Software-Engineering-Ch15/">December 11th 2023, 12:47:50 pm</a>
+            <p>Update date：<a href="https://wh00am1.github.io/2023/12/11/Software-Engineering-Ch15/">December 28th 2023, 11:29:08 pm</a>
             <p>License：<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 DEED, Attribution-NonCommercial 4.0 International</a></p>
         </div>
     
@@ -654,7 +701,7 @@
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#system-design"><span class="toc-number">1.</span> <span class="toc-text">System design</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#real-time-os"><span class="toc-number">2.</span> <span class="toc-text">Real-time OS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#moniter-control"><span class="toc-number">3.</span> <span class="toc-text">Moniter &amp; control</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#data-acquisition-system"><span class="toc-number">4.</span> <span class="toc-text">Data acquisition system</span></a></li></ol>
             </div>
         
         <!-- sidebar -->
@@ -1118,6 +1165,8 @@
         
         
         
+        
+        
     
     
     
@@ -1147,13 +1196,13 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/22</span>
-            <a class="archive-post-title" href="/2023/12/22/Linear-Algebra-Ch9/">Linear Algebra::Ch9</a>
+            <a class="archive-post-title" href="/2023/12/22/Linear-Algebra-Ch8/">Linear Algebra::Ch8</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">12/22</span>
-            <a class="archive-post-title" href="/2023/12/22/Linear-Algebra-Ch8/">Linear Algebra::Ch8</a>
+            <a class="archive-post-title" href="/2023/12/22/Linear-Algebra-Ch9/">Linear Algebra::Ch9</a>
         </li>
     
         
@@ -1330,13 +1379,13 @@
         
         <li class="archive-post-item">
             <span class="archive-post-date">10/17</span>
-            <a class="archive-post-title" href="/2021/10/17/hackme-inndy-tw-onepunch/">hackme.inndy.tw::onepunch</a>
+            <a class="archive-post-title" href="/2021/10/17/hackme-inndy-tw-Rsbo/">hackme.inndy.tw::Rsbo & Rsbo 2</a>
         </li>
     
         
         <li class="archive-post-item">
             <span class="archive-post-date">10/17</span>
-            <a class="archive-post-title" href="/2021/10/17/hackme-inndy-tw-Rsbo/">hackme.inndy.tw::Rsbo & Rsbo 2</a>
+            <a class="archive-post-title" href="/2021/10/17/hackme-inndy-tw-onepunch/">hackme.inndy.tw::onepunch</a>
         </li>
     
         
